@@ -7,41 +7,79 @@ import { ListGroup, ListGroupItem } from 'reactstrap';
 class ToDoTask extends Component {
     constructor(props) {
         super(props);
-        this.show = this.show.bind(this);
         this.state = {
-            toDoArr: [...this.props.toDoTaskList]
+            display: false
         };
     }
-    
-    componentWillUpdate(nextProps, nextState) {
-        console.log("AAAAAAAAAAAAAAAAA");
-        
-        console.log(nextProps, nextState);
-        
+
+    toggle() {
+        this.setState({ display: !this.state.display })
     }
 
-    createTaskToDo = () => {
-        if(this.state.toDoArr.length > 0){
-            return(
-                this.state.toDoArr.map(elm => {
-                    return (<ListGroupItem color="success">{elm.name}</ListGroupItem>)
-                })
-            )
-        }
+    hendleTaskClick(index, fatherIndex){
+        var task = this.props.projectFromDB.taskContainers[fatherIndex].tasks[index]
+        task.sprintNum = -1;
+        this.props.projectFromDB.taskContainers[fatherIndex].tasks[index] = task;
+        this.setState({})
     }
 
-    show(){
-        console.log(this.state.toDoArr);
-    }
-
-  render() {
+    render() {
     return (
-        <div className="myborder">
-        <button onClick={this.show}>show</button>
-            <ListGroup>
-                <h1>ToDo Tasks</h1>
-                {this.createTaskToDo()}
-            </ListGroup>
+        <div>
+        <div className="taskContainer">
+            <div className="weeksRect">
+                {this.props.creaetWeekRect}
+            </div>
+            task container name: {this.props.containerName} <br />
+            developer name: ---
+        <button className="btn-openTasks"
+            onClick={() => this.toggle()}
+            >
+            Open Tasks
+            </button>
+        </div>
+            {this.state.display ? <div className="showTasks">
+            {this.props.tasks.map((item, index) => {
+                if (item.started != true && item.sprintNum == 2) {
+                    return(
+                        <ListGroupItem
+                            key={index}
+                            color="success"
+                            tag="button" 
+                            action
+                            onClick={() => this.hendleTaskClick(index, this.props.fatherIndex)}
+                        >
+                            {item.name},  {}
+                            {item.length} Work Days {}
+                            {this.props.contIndex}
+                        </ListGroupItem>
+                    )
+                }
+                else if (item.started != true && item.sprintNum != 2) {
+                    return(
+                        <ListGroupItem
+                            key={index}
+                            color="danger"
+                        >
+                            {item.name},  {}
+                            {item.length} Work Days {}
+                        </ListGroupItem>
+                    )
+                }
+                else if (item.started == true) {
+                    return(
+                        <ListGroupItem
+                            key={index}
+                            color="danger"
+                        >
+                            {item.name},  {}
+                            {item.length} Work Days {}
+                            <h3>started</h3>
+                        </ListGroupItem>
+                    )
+                }
+            })}
+        </div> : null}
         </div>
     );
   }

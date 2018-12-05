@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import '../App.css';
 import { ListGroup, ListGroupItem } from 'reactstrap';
 import { connect } from 'react-redux';
-import {sendToTodoTasks} from '../actions/actions';
 import store from '../store/store';
-
+import $ from 'jquery';
+import axios from 'axios'
 
 class TaskContainer extends Component {
     constructor(props) {
@@ -12,48 +12,79 @@ class TaskContainer extends Component {
         this.state = {
             display: false
         }
-        // this.sendTaskTotodoTask = this.sendTaskTotodoTask.bind(this)
     }
 
     toggle() {
         this.setState({ display: !this.state.display })
     }
 
-    sendTaskTotodoTask(item, index){
-        store.dispatch(sendToTodoTasks(item, index));
-        this.setState({});
+    async updateData(fatherIndex, index){
+        const projectId = this.props.projectFromDB._id;
+        var task = this.props.projectFromDB.taskContainers[fatherIndex].tasks[index]
+        task.sprintNum = 2;
+        this.props.projectFromDB.taskContainers[fatherIndex].tasks[index] = task;
+        this.setState({})
+        await axios.put('/updateSprintNumInTask', {id:projectId, fatherIndex:fatherIndex, index:index, sprintNum:2})
+    }
+
+    hendleTaskClick(index, fatherIndex){
+        this.updateData(fatherIndex, index)
     }
 
     render() {
         return (
             <div>
                 <div className="taskContainer">
-                    {this.props.mykey}
                     <div className="weeksRect">
                         {this.props.creaetWeekRect}
                     </div>
                     task container name: {this.props.containerName} <br />
                     developer name: ---
                 <button className="btn-openTasks"
-                        onClick={() => this.toggle()}
-                    >Open Tasks</button>
+                    onClick={() => this.toggle()}
+                    >
+                    Open Tasks
+                    </button>
                 </div>
-                {this.state.display ? <div className="showTasks">
+                    {this.state.display ? <div className="showTasks">
                     {this.props.tasks.map((item, index) => {
-                        return (
-                            <ListGroup key={index}>
+                        if (item.started != true && item.sprintNum == -1) {
+                            return(
                                 <ListGroupItem
-                                color="warning"
-                                tag="button" 
-                                action
-                                onClick={()=>this.sendTaskTotodoTask(item, index)}
+                                    key={index}
+                                    color="warning"
+                                    tag="button" 
+                                    action
+                                    onClick={() => this.hendleTaskClick(index, this.props.fatherIndex)}
                                 >
-                                {item.name},  {}
-                                {item.length} Work Days {}
-                                {this.props.contIndex}
+                                    {item.name},  {}
+                                    {item.length} Work Days {}
                                 </ListGroupItem>
-                            </ListGroup>
-                        )
+                            )
+                        }
+                        else if (item.started != true && item.sprintNum != -1) {
+                            return(
+                                <ListGroupItem
+                                    key={index}
+                                    color="danger"
+                                >
+                                    {item.name},  {}
+                                    {item.length} Work Days {}
+                                </ListGroupItem>
+                            )
+                        }
+                        else if (item.started == true) {
+                            return(
+                                <ListGroupItem
+                                    key={index}
+                                    color="danger"
+                                >
+                                    {item.name},  {}
+                                    {item.length} Work Days {}
+                                    <h4>started</h4>
+                                </ListGroupItem>
+                            )
+                        }
                     })}
                 </div> : null}
             </div>

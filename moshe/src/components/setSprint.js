@@ -7,6 +7,10 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import TaskContainer from './taskContainer';
 import ToDoTask from './toDoTask';
 import { ListGroup, ListGroupItem } from 'reactstrap';
+import { Button, Badge } from 'reactstrap';
+import { createProject, taskContainersFromDbToProject } from '../actions/actions'
+import jquery from 'jquery';
+
 
 
 class SetSprint extends Component {
@@ -16,6 +20,38 @@ class SetSprint extends Component {
         this.state = {
 
         };
+        
+    }
+
+    async createProject(){
+        console.log('createProject');
+        await axios.post('http://10.2.1.112:3000/createProject', this.props.project1)
+        .then((req, res) => {
+        })
+        await axios.get('/getAllProject').
+        then((res) => {
+            if (res.data.length == 1) {
+                let myProject = res.data[0];
+                store.dispatch(createProject(myProject));
+            }
+        })
+    }
+
+    updateOfterLockSprint(projecrId, taskContainers){
+        axios.put('/lockSprint', {projectId:projecrId, taskContainers:taskContainers})
+    }
+
+    async hendleLockSprint(){
+        let projecrId = this.props.projectFromDB._id;
+        this.props.projectFromDB.taskContainers.map( async (container, contIndex) => {
+            container.tasks.map( async (task, taskIndex) => {
+                if(task.sprintNum == 2){
+                    task.started = true;
+                }
+            })
+        })
+        console.log(this.props.projectFromDB.taskContainers);
+        await this.updateOfterLockSprint(projecrId, this.props.projectFromDB.taskContainers)
     }
 
     // מחשבן את אורך המשימה לפי כל זמני התת משימות וזה מתעגל כלפי מעלה
@@ -29,62 +65,89 @@ class SetSprint extends Component {
 
     creaetWeekRect = (contLength) => {
         const sprintLength = 2;
-        var divArr = [];
+        const indexInSprint = 1;
+        let weeksOfSprintArr = [];
+        let weeksOfProjectArr = [];
         for (let i = 0; i < contLength; i++) {
-            if (i <= (sprintLength - 1)) {
-                let div = <div key={i} className="weekRectBlack"></div>
-                divArr.push(div)
-            }
-            else {
-                let div = <div key={i} className="weekRectWhite"></div>
-                divArr.push(div)
-            }
+            let div = <div key={i} className="weekRectWhite"></div>
+            weeksOfProjectArr.push(div)
         }
-        return divArr;
+        for (let i = 0; i < sprintLength; i++) {
+            let div = <div key={i} className="weekRectBlack"></div>
+            weeksOfSprintArr.push(div)
+        }
+
+        weeksOfProjectArr.splice(indexInSprint,sprintLength,weeksOfSprintArr)
+        return weeksOfProjectArr;
     }
 
-    generateButtonID(index) {
-        return 'btnOpenTasks' + index
+    buildingBankTasks = () => {
+        if (!jquery.isEmptyObject(this.props.projectFromDB)) {
+            return (
+                <div>
+                    {this.props.projectFromDB.taskContainers.map((item, index) => {
+                        let contLength = this.calculateLengthCont(item);
+                        return (
+                            <ListGroup key={index}>
+                                <TaskContainer
+                                    key={index}
+                                    creaetWeekRect={this.creaetWeekRect(contLength)}
+                                    containerName={item.name}
+                                    tasks={item.tasks}
+                                    fatherIndex={index}
+                                />
+                            </ListGroup>
+                            
+                        )
+                    })}
+                </div>
+            )
+        }
     }
 
-    buildingTasks = () => {
-        return (
-            <div>
-                {this.props.project1.containers.map((item, index) => {
-
-                    let contLength = this.calculateLengthCont(item);
-                    return (
-                        <TaskContainer
-                            key={index}
-                            creaetWeekRect={this.creaetWeekRect(contLength)}
-                            containerName={item.name}
-                            tasks={item.tasks}
-                            contIndex={index}
-                        />
-                    )
-                })}
-            </div>
-        )
+    buildingTodoTasks = () => {
+        if (!jquery.isEmptyObject(this.props.projectFromDB)){
+            return (
+                <div>
+                    {this.props.projectFromDB.taskContainers.map((item, index) => {
+                        let contLength = this.calculateLengthCont(item);
+                        return (
+                            <ListGroup key={index}>
+                                <ToDoTask
+                                    key={index}
+                                    creaetWeekRect={this.creaetWeekRect(contLength)}
+                                    containerName={item.name}
+                                    tasks={item.tasks}
+                                    fatherIndex={index}
+                                />
+                            </ListGroup>
+                        )
+                    })}
+                </div>
+            )
+        }
     }
 
     render() {
 
         return (
             <div>
+                <button onClick={() => this.createProject()}>Create Project</button>
                 <div className="row">
                     <div className="col-5">
                         <div className="myborder">
-                            <h1>Sprint ---</h1>
-                            {this.buildingTasks()}
+                            <h1>Sprint <Badge color="warning" pill>2</Badge></h1>
+                            {this.buildingBankTasks()}
                         </div>
                     </div>
                     <div className="col-5">
                         <div className="myborder">
-                            
+                            <h1>Sprint <Badge color="warning" pill>2</Badge></h1>
+                            {this.buildingTodoTasks()}
                         </div>
                     </div>
-
                 </div>
+                    <Button className="btn-lockSprint" color="info" onClick={() => this.hendleLockSprint()}>Lock Sprint </Button>
             </div>
         )
     }

@@ -1,11 +1,9 @@
 const mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-
-
 const projectSchema = {
     name: String,
-    startDate: Date,
+    startDate: String,
     dueDate: String, // can be calculated when we know start date and the project's duration
     sprintLength: Number,
     // project's task completion resolutiom e.g. [20,60,80] represents a project
