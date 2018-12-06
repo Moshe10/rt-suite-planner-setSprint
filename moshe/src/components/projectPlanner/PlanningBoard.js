@@ -44,7 +44,7 @@ export class PlanningBoard extends Component {
                             return (<Line key={"lineY" + index} stroke="black"
                                           points={[0, item, this.state.gridX.slice(-1).pop(), item]}/>)
                         })}
-                        {this.props.data.containers.filter((item,index)=>{return item.week !== 0}).map((item, index) => {
+                        {this.props.data.containers.map((item, index) => {
                             return functionalTaskContainer({
                                 row: index,
                                 col: this.props.data.containers[index].week,
@@ -72,38 +72,38 @@ export class PlanningBoard extends Component {
                                 }), true)
                             })
                         })}
-                        <Rect width={this.state.firstCellWidth - 1}
-                              height={(this.props.data.containers.length + 1) * this.state.cellHeight}
-                              fill = {'white'}
-                        />
-                        {this.props.data.containers.filter(item=>{return item.week === 0}).map((item, index) => {
-                            return functionalTaskContainer({
-                                row: index,
-                                col: this.props.data.containers[index].week,
-                                offset: this.props.offset,
-                                cellHeight: this.state.cellHeight,
-                                containerName: item.contName,
-                                firstCellWidth: this.state.firstCellWidth,
-                                cellWidth: this.state.cellWidth,
-                                length: item.tasks.reduce(((a, b) => {
-                                    return a + b.taskLength
-                                }), 0),
-                                percentageDone: item.tasks.reduce(((a, b) => {
-                                    return a + ((b.status === "done") ? b.taskLength : 0)
-                                }), 0) / item.tasks.reduce(((a, b) => {
-                                    return a + b.taskLength
-                                }), 0),
-                                changeWeekHandler: ((week) => this.props.changeWeekHandler(index, week)),
-                                percentageWorking: item.tasks.reduce(((a, b) => {
-                                    return a + ((b.status === "working") ? b.taskLength : 0)
-                                }), 0) / item.tasks.reduce(((a, b) => {
-                                    return a + b.taskLength
-                                }), 0),
-                                draggable: item.tasks.reduce(((a, b) => {
-                                    return a && b.status === "null"
-                                }), true)
-                            })
-                        })}
+                        {/*<Rect width={this.state.firstCellWidth - 1}*/}
+                              {/*height={(this.props.data.containers.length + 1) * this.state.cellHeight}*/}
+                              {/*fill = {'white'}*/}
+                        {/*/>*/}
+                        {/*{this.props.data.containers.filter(item=>{return item.week === 0}).map((item, index) => {*/}
+                            {/*return functionalTaskContainer({*/}
+                                {/*row: index,*/}
+                                {/*col: this.props.data.containers[index].week,*/}
+                                {/*offset: this.props.offset,*/}
+                                {/*cellHeight: this.state.cellHeight,*/}
+                                {/*containerName: item.contName,*/}
+                                {/*firstCellWidth: this.state.firstCellWidth,*/}
+                                {/*cellWidth: this.state.cellWidth,*/}
+                                {/*length: item.tasks.reduce(((a, b) => {*/}
+                                    {/*return a + b.taskLength*/}
+                                {/*}), 0),*/}
+                                {/*percentageDone: item.tasks.reduce(((a, b) => {*/}
+                                    {/*return a + ((b.status === "done") ? b.taskLength : 0)*/}
+                                {/*}), 0) / item.tasks.reduce(((a, b) => {*/}
+                                    {/*return a + b.taskLength*/}
+                                {/*}), 0),*/}
+                                {/*changeWeekHandler: ((week) => this.props.changeWeekHandler(index, week)),*/}
+                                {/*percentageWorking: item.tasks.reduce(((a, b) => {*/}
+                                    {/*return a + ((b.status === "working") ? b.taskLength : 0)*/}
+                                {/*}), 0) / item.tasks.reduce(((a, b) => {*/}
+                                    {/*return a + b.taskLength*/}
+                                {/*}), 0),*/}
+                                {/*draggable: item.tasks.reduce(((a, b) => {*/}
+                                    {/*return a && b.status === "null"*/}
+                                {/*}), true)*/}
+                            {/*})*/}
+                        {/*})}*/}
                     </Layer>
                 </Stage>
             </div>
