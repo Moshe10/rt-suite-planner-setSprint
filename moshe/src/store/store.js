@@ -1,9 +1,15 @@
 import { createStore } from 'redux';
-
+import moment from 'moment';
 
 var initState = {
-
+    dataFromHomePage: {
+            startProject: new Date(),
+        countSprint: null,
+        resolutionTasks: []
+    },
+    saveData: false,
     projectFromDB:{},
+    saveData: false,
     project1: {
         name: 'project1',
         startDate: null,
@@ -50,6 +56,11 @@ var initState = {
     }, // end project.
 }
 
+const sorter = (a,b) => {
+    return a - b;
+}
+let newResolutionTasks = [];
+
 const reducer = function (initState, action) {
     var newState = { ...initState };
     switch (action.type) {
@@ -57,6 +68,41 @@ const reducer = function (initState, action) {
             newState.projectFromDB = action.payload;
             console.log(newState.projectFromDB);
             return newState;
+        case "SAVE_DATA":
+            newState.saveData = true;
+            return newState;
+        case "SAVE_RESULUTION":
+            if (newState.dataFromHomePage.resolutionTasks.includes(parseInt(action.resulution)) || parseInt(action.resulution) == 0) {
+                return newState;
+            } else {
+                // newResolutionTasks = newState.dataFromHomePage.resolutionTasks.slice();
+                // newResolutionTasks.push(parseInt(action.resulution));
+                // newResolutionTasks.sort(sorter);
+                // let newDFHP = Object.assign(newState.dataFromHomePage,{resolutionTasks:newResolutionTasks});
+
+                console.log(newState.dataFromHomePage.resolutionTasks);
+                newResolutionTasks.push(parseInt(action.resulution));
+                // newState.dataFromHomePage.resolutionTasks.push(parseInt(action.resulution));
+                // newState.dataFromHomePage.resolutionTasks.sort(sorter);
+                newResolutionTasks.sort(sorter);
+                newState.dataFromHomePage.resolutionTasks = newResolutionTasks.slice();
+                console.log(newState.dataFromHomePage.resolutionTasks);
+                return newState;
+            }
+        case "DELETE_LAST":
+            newState.dataFromHomePage.resolutionTasks.pop()
+            return newState;
+        case "DELETE_ALL":
+            newState.dataFromHomePage.resolutionTasks = []
+            return newState;
+        case "CREATE_SPRINTS":
+            newState.dataFromHomePage.countSprint = action.weeksOfSprints;
+            newState.project1.sprintLength = action.weeksOfSprints;
+            return newState
+        case "START_PROJECT":
+            newState.dataFromHomePage.startProject = action.date;
+            return newState;
+
 
         default:
             return newState

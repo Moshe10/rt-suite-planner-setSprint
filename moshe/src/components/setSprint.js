@@ -8,7 +8,7 @@ import TaskContainer from './taskContainer';
 import ToDoTask from './toDoTask';
 import { ListGroup, ListGroupItem } from 'reactstrap';
 import { Button, Badge } from 'reactstrap';
-import { createProject, taskContainersFromDbToProject } from '../actions/actions'
+import { createProject, taskContainersFromDbToProject } from '../actions/actions';
 import jquery from 'jquery';
 
 

@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {Stage, Layer, Line, Rect} from 'react-konva';
 import {functionalTaskContainer} from "./taskContainer";
 
-export class PlanningBoard extends Component {
+export default class PlanningBoard extends Component {
     constructor(props) {
         super(props);
         let tempGridX = [this.props.firstCellWidth];
