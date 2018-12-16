@@ -4,7 +4,7 @@
 moshe/node_modules
 moshe/.pnp
 moshe.pnp.js
-
+/package-lock.json
 # testing
 /coverage
 
