@@ -1,21 +1,14 @@
 import React, { Component } from 'react';
 import store from '../store/store';
 import { connect } from "react-redux";
-import { saveData, startProject, savePercentage, createSprints, saveResulutionFromHomePage, DeleteAll, DeleteLast } from '../actions/actions'
+import { saveData, startProject, createProject, savePercentage, createSprints, saveResulutionFromHomePage, DeleteAll, DeleteLast, setWeeksOfProject } from '../actions/actions'
 import '../App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import moment from 'moment';
-import $ from 'jquery';
-import CheckedSelect from 'react-select-checked';
-import Picky from 'react-picky';
 import 'react-picky/dist/picky.css';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { Link } from 'react-router-dom';
-import App from '../App';
-import { BrowserRouter, Route, Switch, Router } from 'react-router-dom';
-
-
+import axios from 'axios';
+import jquery from 'jquery';
 /**Here the project manager will enter the parameters necessary to open the software and they are 1. Start date of work 2. Sprint length desirable in the project 3. Which percentage of progress will be tested */
 
 
@@ -24,22 +17,52 @@ import { BrowserRouter, Route, Switch, Router } from 'react-router-dom';
 class HomePage extends Component {
     constructor(props) {
         super(props);
-        this.handleChange = this.handleChange.bind(this);
+        this.handleChangeOfDatePicker = this.handleChangeOfDatePicker.bind(this);
         this.chengeSelect = this.chengeSelect.bind(this);
         this.createSelect = this.createSelect.bind(this);
-        this.show = this.show.bind(this);
         this.saveData = this.saveData.bind(this);
         this.DeleteAll = this.DeleteAll.bind(this);
         this.DeleteLast = this.DeleteLast.bind(this);
         this.state = {}
     }
     
-    /**
-     * 
-     * @param {Enters the start date of work on the project} date 
-     */
+    // /**
+    //  * 
+    //  * @param {Enters the start date of work on the project} date 
+    //  */
 
-    handleChange(date) {
+    componentWillMount(){
+        // this.calculateTheProLength(this.props.project1.name, this.props.project1.containers );
+
+    }
+    
+    async myCreateProject(){
+        console.log('createProject');
+        await axios.post('http://10.2.2.108:3000/createProject', this.props.project1)
+        .then((req, res) => {
+        })
+        await axios.get('/getAllProject').
+        then((res) => {
+            if (res.data.length == 1) {
+                let myProject = res.data[0];
+                store.dispatch(createProject(myProject));
+            }
+        })
+    }
+
+    // calculateTheProLength(projectName, taskContainers){
+    //     let proLength = 0;
+    //     let name = projectName;
+    //     for (let i = 0; i < taskContainers.length; i++) {
+    //         for (let z = 0; z < taskContainers[i].tasks.length; z++) {
+    //             proLength += taskContainers[i].tasks[z].length;
+    //         }
+    //     }
+    //     let weeksOfPro = Math.ceil(proLength / 5)
+    //     store.dispatch(setWeeksOfProject(name, weeksOfPro ))
+    // }
+
+    handleChangeOfDatePicker(date) {
         store.dispatch(startProject(date));
         this.setState({});
     }
@@ -48,24 +71,13 @@ class HomePage extends Component {
         store.dispatch(DeleteAll())
         this.setState({})
     }
+
     DeleteLast() {
         store.dispatch(DeleteLast())
         this.setState({})
     }
 
-
-    // getPercentageStartPoint(i) {
-    //     if (i == 0) {
-    //         return 5;
-    //     } else {
-    //         return this.props.dataFromHomePage.resolutionTasks[i - 1] + 5;
-    //     }
-    // }
-
-
     createSelect(startVal) {
-        console.log('createSelect() ',startVal);
-        
         var arrForSelect = [];
         for (let i = startVal; i <= 100;) {
             arrForSelect.push(i);
@@ -83,66 +95,67 @@ class HomePage extends Component {
         };
     }
 
-
     chengeSelect(e) {
-        console.log("chengeSelect()");
         store.dispatch(saveResulutionFromHomePage(e.target.value))
         this.setState({});
     }
 
-
-    changeInput(e) {
+    changeInputToSprint(e) {
         store.dispatch(createSprints(e.target.value))
-    }
-    show(){
-        console.log(this.props.saveData);
     }
     
      //   The function that checks if the necessary parameters are entered then the next page will open
     saveData() {
-        if (this.props.dataFromHomePage.resolutionTasks.length > 0 && this.props.dataFromHomePage.countSprint != null) {
-
-            store.dispatch(saveData())
-        }else{alert("Please fill in the three fields")}
+        if (!jquery.isEmptyObject(this.props.projectFromDB)) {
+            if (this.props.projectFromDB.resolution.length > 0 && this.props.projectFromDB.sprintLength != null) {
+                store.dispatch(saveData())
+            }
+        }
+        else{
+            alert("Please fill in the three fields")
+        }
     }
 
 
     render() {
-        let percentageArray = [...this.props.dataFromHomePage.resolutionTasks];
-        var lastSelect = percentageArray[percentageArray.length - 1]
-        console.log('Math.max(this.props.dataFromHomePage.resolutionTasks)', Math.max(this.props.dataFromHomePage.resolutionTasks));
+        // let percentageArray = [...this.props.dataFromHomePage.resolutionTasks];
+        // var lastSelect = percentageArray[percentageArray.length - 1]
+        let resolutionArrFromstore = this.props.projectFromDB.resolution;
+        
         return (
             <div>
+                <button onClick={() => this.myCreateProject()}>Create Project</button>
                 <div className="row">
                     <div className="col-3">
                         <label htmlFor="">choich date for start project</label>
                         <br />
                         <DatePicker
                             selected={this.props.dataFromHomePage.startProject}
-                            onSelect={this.handleChange}
+                            onSelect={this.handleChangeOfDatePicker}
                         />
                     </div>
                     <div className="col-3" >
                         <label htmlFor="">choich sprint time in weeks</label>
                         <input type="number" min="1"
-                            onChange={this.changeInput} />
+                         onChange={(e) => this.changeInputToSprint(e)} />
                     </div>
                     <div className="col-3" >
                         <label htmlFor="">Choose a task execution resolution
                         </label>
                         <div className="selects">
-                            {this.createSelect(Math.max(this.props.dataFromHomePage.resolutionTasks))}
-                            <div className="resolutionTasks" style={{"margin": "3px"}}>View the percentage of progress you selected <br />
-                            {console.log("from render in HomePage",this.props.dataFromHomePage.resolutionTasks)}
-                                {this.props.dataFromHomePage.resolutionTasks.length > 0 ?  this.props.dataFromHomePage.resolutionTasks.map((SelectedNumber, index) =>
+                            {!jquery.isEmptyObject(this.props.projectFromDB) ? this.createSelect(Math.max(...resolutionArrFromstore) + 5) : null}
+                            {!jquery.isEmptyObject(this.props.projectFromDB) ? 
+                            <div className="resolutionTasks" style={{"margin": "3px"}}>
+                                View the percentage of progress you selected <br />
+                                {this.props.projectFromDB.resolution.length > 0 ?  this.props.projectFromDB.resolution.map((SelectedNumber, index) =>
                                 <div className="SelectedNumber" key={index}>{SelectedNumber}%</div>) : null}
-                                <button className="bb" onClick={() => this.DeleteAll}>Delete all</button>
-                                <button className="bb" onClick={() => this.DeleteLast}>Delete last</button>
-                            </div>
+                                <button className="bb" onClick={() => this.DeleteAll()}>Delete all</button>
+                                <button className="bb" onClick={() => this.DeleteLast()}>Delete last</button>
+                            </div> : <h2>waiting to press on createProject...</h2>}
                         </div>
                     </div>
                 </div>
-                <button onClick={() => this.saveData}>svae Data and go to the planning page</button>
+                <button onClick={() => this.saveData()}>svae Data and go to the planning page</button>
             </div>
         )
     }

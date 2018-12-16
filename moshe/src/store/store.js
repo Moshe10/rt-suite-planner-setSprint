@@ -1,21 +1,28 @@
 import { createStore } from 'redux';
-import moment from 'moment';
+import jquery from 'jquery';
+
 
 var initState = {
     dataFromHomePage: {
-            startProject: new Date(),
+        startProject: new Date(),
         countSprint: null,
-        resolutionTasks: []
+        resolutionTasks: [0]
     },
+    currentSprint:null,
     saveData: false,
     projectFromDB:{},
-    saveData: false,
+    projectLength:{
+        projectName:'',
+        length:null,
+    },
+    toggleSetSprint: true,
+    TEST: true,
     project1: {
         name: 'project1',
-        startDate: null,
-        dueDate: '10/10/10',
-        sprintLength: 2,
-        rezolution: [],
+        startDate: new Date(),
+        dueDate: null,
+        sprintLength: null,
+        resolution: [0],
         developers: [
         { name: 'moshe', email: 'moshb@mail.com', freeWeeks: [true, false, true] },
         { name: 'avi', email: 'avi@mail.com', freeWeeks: [false, false, true] },
@@ -29,27 +36,27 @@ var initState = {
         ],
         containers: [
             {
-                name: 'back end', week: 3, developers: [], tasks: [
-                    { from: 'back end', name: 'task1', length: 5, sprintNum: -1, started: null },
-                    { from: 'back end', name: 'task2', length: 4, sprintNum: -1, started: null },
-                    { from: 'back end', name: 'task3', length: 3, sprintNum: -1, started: null },
-                    { from: 'back end', name: 'task4', length: 1, sprintNum: -1, started: null }
+                name: 'back end', week: null, developers: [], tasks: [
+                    { from: 'back end', name: 'task1', length: 5, sprintNum: -1, started: null, status:null },
+                    { from: 'back end', name: 'task2', length: 4, sprintNum: -1, started: null, status:null },
+                    { from: 'back end', name: 'task3', length: 3, sprintNum: -1, started: null, status:null },
+                    { from: 'back end', name: 'task4', length: 1, sprintNum: -1, started: null, status:null }
                 ]
             },
             {
-                name: 'front end', week: 4, developers: [], tasks: [
-                    { from: 'front end', name: 'task5', length: 7, sprintNum: 4, started: true },
-                    { from: 'front end', name: 'task6', length: 1, sprintNum: -1, started: null },
-                    { from: 'front end', name: 'task7', length: 1, sprintNum: 4, started: true },
-                    { from: 'front end', name: 'task8', length: 2, sprintNum: -1, started: null },
+                name: 'front end', week: null, developers: [], tasks: [
+                    { from: 'front end', name: 'task5', length: 7, sprintNum: 4, started: true, status:null },
+                    { from: 'front end', name: 'task6', length: 1, sprintNum: -1, started: null, status:null },
+                    { from: 'front end', name: 'task7', length: 1, sprintNum: 4, started: true, status:null },
+                    { from: 'front end', name: 'task8', length: 2, sprintNum: -1, started: null, status:null },
                 ]
             },
             {
-                name: 'css', week: 4, developers: [], tasks: [
-                    { from: 'css', name: 'task10', length: 9, sprintNum: -1, started: null },
-                    { from: 'css', name: 'task11', length: 6, sprintNum: -1, started: null },
-                    { from: 'css', name: 'task11', length: 6, sprintNum: 1, started: true },
-                    { from: 'css', name: 'task12', length: 3, sprintNum: -1, started: null },
+                name: 'css', week: null, developers: [], tasks: [
+                    { from: 'css', name: 'task10', length: 9, sprintNum: -1, started: null, status:'done' },
+                    { from: 'css', name: 'task11', length: 6, sprintNum: -1, started: null, status:null },
+                    { from: 'css', name: 'task11', length: 6, sprintNum: 1, started: true, status:null },
+                    { from: 'css', name: 'task12', length: 3, sprintNum: -1, started: null, status:null },
                 ]
             }
         ] // end containers.
@@ -66,44 +73,52 @@ const reducer = function (initState, action) {
     switch (action.type) {
         case 'CREATE_PROJECT':
             newState.projectFromDB = action.payload;
+            newState.projectFromDB.resolution = [0];
             console.log(newState.projectFromDB);
             return newState;
         case "SAVE_DATA":
             newState.saveData = true;
             return newState;
         case "SAVE_RESULUTION":
-            if (newState.dataFromHomePage.resolutionTasks.includes(parseInt(action.resulution)) || parseInt(action.resulution) == 0) {
+            if (newState.projectFromDB.resolution.includes(parseInt(action.resulution)) || parseInt(action.resulution) == 0) {
                 return newState;
-            } else {
-                // newResolutionTasks = newState.dataFromHomePage.resolutionTasks.slice();
-                // newResolutionTasks.push(parseInt(action.resulution));
-                // newResolutionTasks.sort(sorter);
-                // let newDFHP = Object.assign(newState.dataFromHomePage,{resolutionTasks:newResolutionTasks});
-
-                console.log(newState.dataFromHomePage.resolutionTasks);
+            } 
+            else {
                 newResolutionTasks.push(parseInt(action.resulution));
-                // newState.dataFromHomePage.resolutionTasks.push(parseInt(action.resulution));
-                // newState.dataFromHomePage.resolutionTasks.sort(sorter);
                 newResolutionTasks.sort(sorter);
-                newState.dataFromHomePage.resolutionTasks = newResolutionTasks.slice();
-                console.log(newState.dataFromHomePage.resolutionTasks);
+                newState.projectFromDB.resolution = newResolutionTasks.slice();
+                console.log(newState.projectFromDB.resolution);
+                
                 return newState;
             }
         case "DELETE_LAST":
-            newState.dataFromHomePage.resolutionTasks.pop()
+            newState.project1.resolution.pop()
             return newState;
         case "DELETE_ALL":
-            newState.dataFromHomePage.resolutionTasks = []
+            newState.project1.resolution = [0]
             return newState;
-        case "CREATE_SPRINTS":
-            newState.dataFromHomePage.countSprint = action.weeksOfSprints;
-            newState.project1.sprintLength = action.weeksOfSprints;
-            return newState
+        case "CREATE_SPRINT":
+        if (!jquery.isEmptyObject(newState.projectFromDB)) {
+            newState.projectFromDB.sprintLength = action.payload;
+            console.log(newState.projectFromDB.sprintLength);
+        }
+        else alert('waiting to press on createProject...')
+            return newState;
         case "START_PROJECT":
-            newState.dataFromHomePage.startProject = action.date;
+            newState.project1.startDate = action.date;
             return newState;
-
-
+        case "SET_WEEKS_PROJECT":
+            newState.projectLength.projectName = action.payload.proName;
+            newState.projectLength.length = action.payload.length;
+            return newState;
+        case "UPDATE_TOGGLE_SET_SPRINT_TO_FALSE":
+            newState.toggleSetSprint = false;
+            console.log(action.payload);
+            newState.currentSprint = action.payload;
+            return newState;
+        case "UPDATE_TOGGLE_SET_SPRINT_TO_TRUE":
+            newState.toggleSetSprint = true;
+            return newState;
         default:
             return newState
     }

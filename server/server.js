@@ -1,4 +1,4 @@
-// my ip = 10.2.1.112
+// my ip = 10.2.2.108
 const bodyParser = require('body-parser');
 const express = require('express');
 const mongoose = require('mongoose');
@@ -16,7 +16,8 @@ app.use(bodyParser.json());
 
 // create the all project in mongoose. 
 app.post('/createProject', (req, res) => {
-
+    console.log("create project in server POST");
+    
     let newProject = new AllProjectModel({
         name: req.body.name,
         sprintLength:req.body.sprintLength,
@@ -36,6 +37,8 @@ app.post('/createProject', (req, res) => {
 // get to the client side the all project.
 app.get('/getAllProject', (req, res) => {
     AllProjectModel.find({}, (err, project) => {
+        console.log(project);
+        
         res.json(project)
     })
 })
@@ -59,7 +62,7 @@ app.put('/updateSprintNumInTask', ((req, res) => {
 
 app.put('/lockSprint', ((req, res) => {
     res.send("start lock sprint");
-    console.log(req.body);
+    // console.log(req.body);
     id = req.body.projectId;
     taskContainers = req.body.taskContainers;
     AllProjectModel.findById(id, function (err, project) {

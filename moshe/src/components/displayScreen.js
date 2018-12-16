@@ -1,12 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
-import '../App.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'react-datepicker/dist/react-datepicker.css';
-import App from '../App';
 import HomePage from './homePage';
 import { Link, BrowserRouter, Route } from 'react-router-dom';
-import store from '../store/store';
+import DisplayScreenSprint from './projectPlanner/displayScreenSprint';
 
 
 
@@ -15,12 +11,15 @@ class DisplayScreen extends Component {
         super()
        
     }
-  /**Checks if the necessary parameters have been inserted and then the main page will open
- */
-    Test = () => {
+    hendleChangeWeekHandler(index, week){
+        console.log(index,week);
+        
+    }
+
+    Toggle = () => {
         if (this.props.saveData){
             return (
-                <App/>
+                <DisplayScreenSprint/>
             )
         }
         else {
@@ -30,7 +29,6 @@ class DisplayScreen extends Component {
         }
     }
 
-
     render() {
         return (
         
@@ -38,14 +36,11 @@ class DisplayScreen extends Component {
                     <div className="mainDiv">
 
                         <Link to="/"></Link>
-                      
 
-                        <Route exact path='/' component={this.Test} />
-                       
+                        <Route exact path='/' component={this.Toggle} />
 
                     </div>
                 </BrowserRouter>
-         
         )
     }
 }

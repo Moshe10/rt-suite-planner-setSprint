@@ -13,6 +13,7 @@ class TaskContainer extends Component {
             display: false
         }
     }
+    sprintNum = this.props.currentSprint; 
 
     toggle() {
         this.setState({ display: !this.state.display })
@@ -21,10 +22,10 @@ class TaskContainer extends Component {
     async updateData(fatherIndex, index){
         const projectId = this.props.projectFromDB._id;
         var task = this.props.projectFromDB.taskContainers[fatherIndex].tasks[index]
-        task.sprintNum = 2;
+        task.sprintNum = this.sprintNum;
         this.props.projectFromDB.taskContainers[fatherIndex].tasks[index] = task;
         this.setState({})
-        await axios.put('/updateSprintNumInTask', {id:projectId, fatherIndex:fatherIndex, index:index, sprintNum:2})
+        await axios.put('/updateSprintNumInTask', {id:projectId, fatherIndex:fatherIndex, index:index, sprintNum:this.sprintNum})
     }
 
     hendleTaskClick(index, fatherIndex){

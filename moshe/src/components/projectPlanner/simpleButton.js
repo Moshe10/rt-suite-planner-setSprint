@@ -1,7 +1,7 @@
 import React from 'react'
 import './simpleButton.css'
 
-export class Button extends React.Component {
+export default class Button extends React.Component {
 
     render() {
         const {

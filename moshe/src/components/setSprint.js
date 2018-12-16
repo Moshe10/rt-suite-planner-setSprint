@@ -8,7 +8,7 @@ import TaskContainer from './taskContainer';
 import ToDoTask from './toDoTask';
 import { ListGroup, ListGroupItem } from 'reactstrap';
 import { Button, Badge } from 'reactstrap';
-import { createProject, taskContainersFromDbToProject } from '../actions/actions';
+import { createProject, updateToggleSetSprinToTrue } from '../actions/actions';
 import jquery from 'jquery';
 
 
@@ -23,19 +23,19 @@ class SetSprint extends Component {
         
     }
 
-    async createProject(){
-        console.log('createProject');
-        await axios.post('http://10.2.1.112:3000/createProject', this.props.project1)
-        .then((req, res) => {
-        })
-        await axios.get('/getAllProject').
-        then((res) => {
-            if (res.data.length == 1) {
-                let myProject = res.data[0];
-                store.dispatch(createProject(myProject));
-            }
-        })
-    }
+    // async createProject(){
+    //     console.log('createProject');
+    //     await axios.post('http://10.2.2.108:3000/createProject', this.props.project1)
+    //     .then((req, res) => {
+    //     })
+    //     await axios.get('/getAllProject').
+    //     then((res) => {
+    //         if (res.data.length == 1) {
+    //             let myProject = res.data[0];
+    //             store.dispatch(createProject(myProject));
+    //         }
+    //     })
+    // }
 
     updateOfterLockSprint(projecrId, taskContainers){
         axios.put('/lockSprint', {projectId:projecrId, taskContainers:taskContainers})
@@ -64,7 +64,7 @@ class SetSprint extends Component {
     }
 
     creaetWeekRect = (contLength) => {
-        const sprintLength = 2;
+        const sprintLength = this.props.project1.sprintLength;
         const indexInSprint = 1;
         let weeksOfSprintArr = [];
         let weeksOfProjectArr = [];
@@ -79,6 +79,10 @@ class SetSprint extends Component {
 
         weeksOfProjectArr.splice(indexInSprint,sprintLength,weeksOfSprintArr)
         return weeksOfProjectArr;
+    }
+
+    heandleBackToPlannigBordOC(){
+        store.dispatch(updateToggleSetSprinToTrue())
     }
 
     buildingBankTasks = () => {
@@ -132,17 +136,18 @@ class SetSprint extends Component {
 
         return (
             <div>
-                <button onClick={() => this.createProject()}>Create Project</button>
+                {/* <button onClick={() => this.createProject()}>Create Project</button>{' '} */}
+                <button onClick={() => this.heandleBackToPlannigBordOC()}>Back to Plannig Bord</button>
                 <div className="row">
                     <div className="col-5">
                         <div className="myborder">
-                            <h1>Sprint <Badge color="warning" pill>2</Badge></h1>
+                            <h1>Sprint <Badge color="warning" pill>{this.props.currentSprint}</Badge></h1>
                             {this.buildingBankTasks()}
                         </div>
                     </div>
                     <div className="col-5">
                         <div className="myborder">
-                            <h1>Sprint <Badge color="warning" pill>2</Badge></h1>
+                            <h1>Sprint <Badge color="warning" pill>{this.props.currentSprint}</Badge></h1>
                             {this.buildingTodoTasks()}
                         </div>
                     </div>

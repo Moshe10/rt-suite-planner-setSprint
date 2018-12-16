@@ -1,8 +1,11 @@
 import React, {Component} from 'react';
 import {Stage, Layer, Line, Rect} from 'react-konva';
 import {functionalTaskContainer} from "./taskContainer";
+import Buttons from './buttonSetSprint';
+import { connect } from 'react-redux';
 
-export default class PlanningBoard extends Component {
+
+class PlanningBoard extends Component {
     constructor(props) {
         super(props);
         let tempGridX = [this.props.firstCellWidth];
@@ -72,7 +75,7 @@ export default class PlanningBoard extends Component {
                                 }), true)
                             })
                         })}
-                        {/*<Rect width={this.state.firstCellWidth - 1}*/}
+                        {/* <Rect width={this.state.firstCellWidth - 1}*/}
                               {/*height={(this.props.data.containers.length + 1) * this.state.cellHeight}*/}
                               {/*fill = {'white'}*/}
                         {/*/>*/}
@@ -103,10 +106,13 @@ export default class PlanningBoard extends Component {
                                     {/*return a && b.status === "null"*/}
                                 {/*}), true)*/}
                             {/*})*/}
-                        {/*})}*/}
+                        {/*})} */}
                     </Layer>
                 </Stage>
-            </div>
+                <Buttons/>
+        </div>
         );
     }
 }
+
+export default connect(state => state)(PlanningBoard);
