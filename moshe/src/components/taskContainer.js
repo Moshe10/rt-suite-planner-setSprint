@@ -60,6 +60,7 @@ class TaskContainer extends Component {
                                 >
                                     {item.name},  {}
                                     {item.length} Work Days {}
+                                    , sprint num: {item.sprintNum}
                                 </ListGroupItem>
                             )
                         }
@@ -71,6 +72,7 @@ class TaskContainer extends Component {
                                 >
                                     {item.name},  {}
                                     {item.length} Work Days {}
+                                    , sprint num: {item.sprintNum}
                                 </ListGroupItem>
                             )
                         }
@@ -82,6 +84,7 @@ class TaskContainer extends Component {
                                 >
                                     {item.name},  {}
                                     {item.length} Work Days {}
+                                    , sprint num: {item.sprintNum}
                                     <h4>started</h4>
                                 </ListGroupItem>
                             )

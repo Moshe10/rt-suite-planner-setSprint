@@ -53,7 +53,7 @@ var initState = {
             },
             {
                 name: 'css', week: null, developers: [], tasks: [
-                    { from: 'css', name: 'task10', length: 9, sprintNum: -1, started: null, status:'done' },
+                    { from: 'css', name: 'task10', length: 9, sprintNum: -1, started: null, status:null },
                     { from: 'css', name: 'task11', length: 6, sprintNum: -1, started: null, status:null },
                     { from: 'css', name: 'task11', length: 6, sprintNum: 1, started: true, status:null },
                     { from: 'css', name: 'task12', length: 3, sprintNum: -1, started: null, status:null },

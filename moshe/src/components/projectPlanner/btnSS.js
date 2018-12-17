@@ -26,7 +26,7 @@ class Btn extends Component{
         borderLeft: 'rgb(141,217,252) solid 3px',
         borderRight: 'rgb(141,217,252) solid 3px',
         borderBottom: 'rgb(141,217,252) solid 3px',
-        width: this.props.project1.sprintLength * 100 ,
+        width: this.props.projectFromDB.sprintLength * 100 ,
         height: '200px',
         margin: '0.5px'
     }

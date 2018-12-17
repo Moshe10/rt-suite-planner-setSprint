@@ -25,14 +25,9 @@ class HomePage extends Component {
         this.DeleteLast = this.DeleteLast.bind(this);
         this.state = {}
     }
-    
-    // /**
-    //  * 
-    //  * @param {Enters the start date of work on the project} date 
-    //  */
+  
 
     componentWillMount(){
-        // this.calculateTheProLength(this.props.project1.name, this.props.project1.containers );
 
     }
     
@@ -49,18 +44,6 @@ class HomePage extends Component {
             }
         })
     }
-
-    // calculateTheProLength(projectName, taskContainers){
-    //     let proLength = 0;
-    //     let name = projectName;
-    //     for (let i = 0; i < taskContainers.length; i++) {
-    //         for (let z = 0; z < taskContainers[i].tasks.length; z++) {
-    //             proLength += taskContainers[i].tasks[z].length;
-    //         }
-    //     }
-    //     let weeksOfPro = Math.ceil(proLength / 5)
-    //     store.dispatch(setWeeksOfProject(name, weeksOfPro ))
-    // }
 
     handleChangeOfDatePicker(date) {
         store.dispatch(startProject(date));
@@ -108,7 +91,11 @@ class HomePage extends Component {
     saveData() {
         if (!jquery.isEmptyObject(this.props.projectFromDB)) {
             if (this.props.projectFromDB.resolution.length > 0 && this.props.projectFromDB.sprintLength != null) {
-                store.dispatch(saveData())
+                axios.put('/updateResolution&date&SprintLength',{project_id:this.props.projectFromDB._id, 
+                resolution:this.props.projectFromDB.resolution,
+                sprintLength:this.props.projectFromDB.sprintLength,})
+                //.then((req, res) => {})
+                store.dispatch(saveData());
             }
         }
         else{

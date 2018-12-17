@@ -23,20 +23,6 @@ class SetSprint extends Component {
         
     }
 
-    // async createProject(){
-    //     console.log('createProject');
-    //     await axios.post('http://10.2.2.108:3000/createProject', this.props.project1)
-    //     .then((req, res) => {
-    //     })
-    //     await axios.get('/getAllProject').
-    //     then((res) => {
-    //         if (res.data.length == 1) {
-    //             let myProject = res.data[0];
-    //             store.dispatch(createProject(myProject));
-    //         }
-    //     })
-    // }
-
     updateOfterLockSprint(projecrId, taskContainers){
         axios.put('/lockSprint', {projectId:projecrId, taskContainers:taskContainers})
     }

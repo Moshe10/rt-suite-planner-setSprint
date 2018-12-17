@@ -37,14 +37,12 @@ app.post('/createProject', (req, res) => {
 // get to the client side the all project.
 app.get('/getAllProject', (req, res) => {
     AllProjectModel.find({}, (err, project) => {
-        console.log(project);
-        
         res.json(project)
     })
 })
 
 app.put('/updateSprintNumInTask', ((req, res) => {
-    res.send("start update");
+    res.send("start update sprint number");
     // console.log(req.body);
     projectId = req.body.id;   
     fatherIndex = req.body.fatherIndex;
@@ -53,6 +51,21 @@ app.put('/updateSprintNumInTask', ((req, res) => {
     AllProjectModel.findById(projectId, function (err, project) {
         if (err) return handleError(err);
         project.taskContainers[fatherIndex].tasks[index].sprintNum = sprintNum;
+        project.save((err, project) => {
+            
+        })
+      });
+}))
+
+app.put('/updateResolution&date&SprintLength', ((req, res) => {
+    res.send('start update sprint length, start project date, and resolution of sprint');
+    console.log(req.body);
+    id = req.body.project_id;
+    AllProjectModel.findById(id, function (err, project) {
+        if (err) return handleError(err);
+        console.log(project);
+        project.resolution = req.body.resolution;
+        project.sprintLength = req.body.sprintLength;
         project.save((err, project) => {
             
         })
