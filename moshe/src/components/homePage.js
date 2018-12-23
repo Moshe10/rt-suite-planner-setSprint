@@ -33,7 +33,7 @@ class HomePage extends Component {
     
     async myCreateProject(){
         console.log('createProject');
-        await axios.post('http://10.2.2.108:3000/createProject', this.props.project1)
+        await axios.post('http://10.2.2.109:3000/createProject', this.props.project1)
         .then((req, res) => {
         })
         await axios.get('/getAllProject').

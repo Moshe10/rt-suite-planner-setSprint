@@ -6,7 +6,8 @@ var taskSchema = new Schema({
     name: String, // task name
     length: Number, // length of task in development days (we will sum them to generate the length of a container) - to check? the data might come in in work hours (ask Effort team)
     started: Boolean, // marks if the task already started in an earlier sprint (will be used in Sprint Creation Page)
-    sprintNum: Number // when the task is assigned to a sprint - this field will hold the sprint number it belongs to
+    sprintNum: Number, // when the task is assigned to a sprint - this field will hold the sprint number it belongs to
+    status: String // when the task is get sprint number he change to 'working' and when the task is done he change to 'done' else he on 'none' or 'nuul'.
 });
 
 const containersSchema  = new Schema({

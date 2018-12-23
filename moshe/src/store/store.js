@@ -2,12 +2,14 @@ import { createStore } from 'redux';
 import jquery from 'jquery';
 
 
+
 var initState = {
     dataFromHomePage: {
         startProject: new Date(),
         countSprint: null,
         resolutionTasks: [0]
     },
+    taskOnWork: [0,0,0],
     currentSprint:null,
     saveData: false,
     projectFromDB:{},
@@ -36,7 +38,7 @@ var initState = {
         ],
         containers: [
             {
-                name: 'back end', week: null, developers: [], tasks: [
+                name: 'back end', week: 0, developers: [], tasks: [
                     { from: 'back end', name: 'task1', length: 5, sprintNum: -1, started: null, status:null },
                     { from: 'back end', name: 'task2', length: 4, sprintNum: -1, started: null, status:null },
                     { from: 'back end', name: 'task3', length: 3, sprintNum: -1, started: null, status:null },
@@ -44,7 +46,7 @@ var initState = {
                 ]
             },
             {
-                name: 'front end', week: null, developers: [], tasks: [
+                name: 'front end', week: 0, developers: [], tasks: [
                     { from: 'front end', name: 'task5', length: 7, sprintNum: 4, started: true, status:null },
                     { from: 'front end', name: 'task6', length: 1, sprintNum: -1, started: null, status:null },
                     { from: 'front end', name: 'task7', length: 1, sprintNum: 4, started: true, status:null },
@@ -52,7 +54,7 @@ var initState = {
                 ]
             },
             {
-                name: 'css', week: null, developers: [], tasks: [
+                name: 'css', week: 0, developers: [], tasks: [
                     { from: 'css', name: 'task10', length: 9, sprintNum: -1, started: null, status:null },
                     { from: 'css', name: 'task11', length: 6, sprintNum: -1, started: null, status:null },
                     { from: 'css', name: 'task11', length: 6, sprintNum: 1, started: true, status:null },
@@ -66,7 +68,6 @@ var initState = {
 const sorter = (a,b) => {
     return a - b;
 }
-let newResolutionTasks = [];
 
 const reducer = function (initState, action) {
     var newState = { ...initState };
@@ -80,27 +81,29 @@ const reducer = function (initState, action) {
             newState.saveData = true;
             return newState;
         case "SAVE_RESULUTION":
-            if (newState.projectFromDB.resolution.includes(parseInt(action.resulution)) || parseInt(action.resulution) == 0) {
+            if (newState.projectFromDB.resolution.includes(parseInt(action.resolution)) || parseInt(action.resolution) == 0) {
                 return newState;
             } 
             else {
-                newResolutionTasks.push(parseInt(action.resulution));
-                newResolutionTasks.sort(sorter);
-                newState.projectFromDB.resolution = newResolutionTasks.slice();
-                console.log(newState.projectFromDB.resolution);
-                
-                return newState;
+                let tempArr = newState.projectFromDB.resolution.slice();
+                tempArr.push(parseInt(action.resolution));
+                tempArr.sort(sorter);
+                newState.projectFromDB.resolution = tempArr.slice();
             }
+            return newState;
         case "DELETE_LAST":
-            newState.project1.resolution.pop()
+            if (newState.projectFromDB.resolution.length > 1) {
+                let tempArr = newState.projectFromDB.resolution.slice();
+                tempArr.pop();
+                newState.projectFromDB.resolution = tempArr.slice();
+            }
             return newState;
         case "DELETE_ALL":
-            newState.project1.resolution = [0]
+            newState.projectFromDB.resolution = [0]
             return newState;
         case "CREATE_SPRINT":
         if (!jquery.isEmptyObject(newState.projectFromDB)) {
             newState.projectFromDB.sprintLength = action.payload;
-            console.log(newState.projectFromDB.sprintLength);
         }
         else alert('waiting to press on createProject...')
             return newState;
@@ -113,11 +116,32 @@ const reducer = function (initState, action) {
             return newState;
         case "UPDATE_TOGGLE_SET_SPRINT_TO_FALSE":
             newState.toggleSetSprint = false;
-            console.log(action.payload);
             newState.currentSprint = action.payload;
             return newState;
         case "UPDATE_TOGGLE_SET_SPRINT_TO_TRUE":
             newState.toggleSetSprint = true;
+            return newState;
+        case "UPDATE_WEEK_IN_TASK_CONT":
+            newState.projectFromDB.taskContainers[action.payload.index].week = action.payload.week;
+            return newState;
+        case "PLUS_TO_TASK_ON_WORK":
+            let contIndex1 = action.payload.contIndex;
+            let taskIndex1 = action.payload.taskIndex;
+            // newState.taskOnWork[contIndex1] = newState.taskOnWork[contIndex1] + newState.projectFromDB.taskContainers[contIndex1].tasks[taskIndex1].length;
+            let tempArr1 = newState.taskOnWork.slice();
+            tempArr1[contIndex1] = tempArr1[contIndex1] + newState.projectFromDB.taskContainers[contIndex1].tasks[taskIndex1].length;
+            newState.taskOnWork = tempArr1.slice(); 
+            return newState;
+        case "MINUS_TO_TASK_ON_WORK":
+            let contIndex2 = action.payload.contIndex;
+            let taskIndex2 = action.payload.taskIndex;
+            // newState.taskOnWork[contIndex2] = newState.taskOnWork[contIndex2] - newState.projectFromDB.taskContainers[contIndex2].tasks[taskIndex2].length;
+            let tempArr2 = newState.taskOnWork.slice();
+            tempArr2[contIndex2] = tempArr2[contIndex2] - newState.projectFromDB.taskContainers[contIndex2].tasks[taskIndex2].length;
+            newState.taskOnWork = tempArr2.slice(); 
+            return newState;
+        case "FILL_TASK_ON_WORK_ARR":
+            newState.taskOnWork = action.arr;
             return newState;
         default:
             return newState

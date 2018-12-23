@@ -16,8 +16,8 @@ export function DeleteLast() {
 export function DeleteAll() {
     return { type: "DELETE_ALL" }
 }
-export function saveResulutionFromHomePage(resulution) {
-    return { type: "SAVE_RESULUTION", resulution: resulution }
+export function saveResulutionFromHomePage(resolution) {
+    return { type: "SAVE_RESULUTION", resolution: resolution }
 }
 export function startProject(date) {
     return { type: "START_PROJECT", date: date }
@@ -30,5 +30,17 @@ export function updateToggleSetSprinToFalse(sprintnum) {
 }
 export function updateToggleSetSprinToTrue() {
     return { type: "UPDATE_TOGGLE_SET_SPRINT_TO_TRUE" }
+}
+export function updateWeekInTaskContainer(index, week) {
+    return { type: "UPDATE_WEEK_IN_TASK_CONT", payload:{index:index, week:week} }
+}
+export function plusToTaskOnWork(fatherIndex, index) {
+    return { type: "PLUS_TO_TASK_ON_WORK", payload:{contIndex:fatherIndex, taskIndex:index} }
+}
+export function minusToTaskOnWork(fatherIndex, index) {
+    return { type: "MINUS_TO_TASK_ON_WORK", payload:{contIndex:fatherIndex, taskIndex:index} }
+}
+export function fillTaskOnWorkArr(arr) {
+    return { type: "FILL_TASK_ON_WORK_ARR", payload:arr }
 }
 

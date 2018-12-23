@@ -5,17 +5,20 @@ import PlanningBoard from './PlanningBoard';
 import SetSprint from '../setSprint';
 import store from '../../store/store';
 import { setWeeksOfProject } from '../../actions/actions';
+import axios from "axios";
+import { updateWeekInTaskContainer } from '../../actions/actions'
 
 
 class DisplayScreenSprint extends Component {
-    constructor(){
-        super()
+    constructor(props){
+        super(props)
        
     }
-
+    // projectId = this.props.projectFromDB._id;
+    
+    
     componentWillMount(){
         this.calculateTheProLength(this.props.projectFromDB.name, this.props.projectFromDB.taskContainers );
-
     }
 
     calculateTheProLength(projectName, taskContainers){
@@ -30,8 +33,12 @@ class DisplayScreenSprint extends Component {
         store.dispatch(setWeeksOfProject(name, weeksOfPro ))
     }
 
-    hendleChangeWeekHandler(index, week){
+    async hendleChangeWeekHandler( index, week){
+        const projectId = this.props.projectFromDB._id;
         console.log(index,week);
+        setTimeout(300,alert('this task container get week number ' + week)) ;
+        store.dispatch(updateWeekInTaskContainer(index, week));
+        await axios.put('/updateWeekOfTaskContainer',{id:projectId, contIndex:index, contWeek:week});
     }
 
     Toggle = () => {
@@ -41,11 +48,11 @@ class DisplayScreenSprint extends Component {
                 cellHeight = {100}
                 cellWidth = {100}
                 firstCellWidth = {300}
-                changeWeekHandler = {this.hendleChangeWeekHandler}
+                changeWeekHandler = {this.hendleChangeWeekHandler.bind(this)}
                 offset = {0}
                 data = {{containers:this.props.projectFromDB.taskContainers.map((container) => {
-                        return {contName:container.name,week:0,tasks:container.tasks.map((task) => {
-                        return {taskLength:task.length, status:'null'}})}}),
+                        return {contName:container.name,week:container.week,tasks:container.tasks.map((task) => {
+                        return {taskLength:task.length, status:"none"}})}}),
                         projectLength:this.props.projectLength.length}}
                 />
             )
@@ -58,6 +65,7 @@ class DisplayScreenSprint extends Component {
     }
 
     render() {
+        
         return (
         
                 <BrowserRouter>

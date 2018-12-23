@@ -41,6 +41,25 @@ app.get('/getAllProject', (req, res) => {
     })
 })
 
+app.put('/updateWeekOfTaskContainer',((req, res) => {
+    id = req.body.id;
+    index = req.body.contIndex;
+    week = req.body.contWeek;
+    AllProjectModel.findById(id, (err, project) => {
+        if (!err){
+            project.taskContainers[index].week = week;
+        }
+        project.save((err) => {
+            if(!err){
+                res.send('taskContainer week updated')
+            }
+            else{
+                res.send(err)
+            }
+        });
+    })
+}));
+
 app.put('/updateSprintNumInTask', ((req, res) => {
     res.send("start update sprint number");
     // console.log(req.body);
@@ -59,11 +78,10 @@ app.put('/updateSprintNumInTask', ((req, res) => {
 
 app.put('/updateResolution&date&SprintLength', ((req, res) => {
     res.send('start update sprint length, start project date, and resolution of sprint');
-    console.log(req.body);
     id = req.body.project_id;
     AllProjectModel.findById(id, function (err, project) {
         if (err) return handleError(err);
-        console.log(project);
+        // console.log(project);
         project.resolution = req.body.resolution;
         project.sprintLength = req.body.sprintLength;
         project.save((err, project) => {

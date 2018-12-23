@@ -5,6 +5,8 @@ import { connect } from 'react-redux';
 import store from '../store/store';
 import $ from 'jquery';
 import axios from 'axios'
+import { plusToTaskOnWork } from '../actions/actions';
+
 
 class TaskContainer extends Component {
     constructor(props) {
@@ -13,7 +15,10 @@ class TaskContainer extends Component {
             display: false
         }
     }
-    sprintNum = this.props.currentSprint; 
+    counter = [0,0,0]
+    counter = 0;
+    sprintNum = this.props.currentSprint;
+    // taskOnWork = 0; 
 
     toggle() {
         this.setState({ display: !this.state.display })
@@ -21,15 +26,32 @@ class TaskContainer extends Component {
 
     async updateData(fatherIndex, index){
         const projectId = this.props.projectFromDB._id;
-        var task = this.props.projectFromDB.taskContainers[fatherIndex].tasks[index]
+        var task = this.props.projectFromDB.taskContainers[fatherIndex].tasks[index];
         task.sprintNum = this.sprintNum;
         this.props.projectFromDB.taskContainers[fatherIndex].tasks[index] = task;
-        this.setState({})
-        await axios.put('/updateSprintNumInTask', {id:projectId, fatherIndex:fatherIndex, index:index, sprintNum:this.sprintNum})
+        store.dispatch(plusToTaskOnWork(fatherIndex, index))
+        this.setState({});
+        await axios.put('/updateSprintNumInTask', {id:projectId, fatherIndex:fatherIndex, index:index, sprintNum:this.sprintNum});
     }
 
     hendleTaskClick(index, fatherIndex){
         this.updateData(fatherIndex, index)
+    }
+
+    checkIfTaskStarted(container,index){
+        console.log('checkIfTaskStarted()');
+    
+        let counter = 0;
+        if (counter <= this.props.taskOnWork[this.props.fatherIndex]) {
+                container.tasks.map((task,taskIndex) => {
+                    if (task.started) {
+                        counter += task.length
+                        console.log(task.length);
+                        
+                    }
+                })
+        }
+        return counter;
     }
 
     render() {
@@ -40,7 +62,9 @@ class TaskContainer extends Component {
                         {this.props.creaetWeekRect}
                     </div>
                     task container name: {this.props.containerName} <br />
-                    developer name: ---
+                    developer name: ---  , {}
+                    {/* CITS = checkIfTaskStarted() */}
+                    {this.checkIfTaskStarted(this.props.containerToCITS,this.props.fatherIndex) + this.props.taskOnWork[this.props.fatherIndex]} / {this.props.contLength} work days
                 <button className="btn-openTasks"
                     onClick={() => this.toggle()}
                     >

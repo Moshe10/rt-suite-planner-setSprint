@@ -3,6 +3,9 @@ import '../App.css';
 import { connect } from 'react-redux';
 import { ListGroup, ListGroupItem } from 'reactstrap';
 import axios from 'axios';
+import store from '../store/store';
+import { minusToTaskOnWork } from '../actions/actions';
+
 
 class ToDoTask extends Component {
     constructor(props) {
@@ -19,10 +22,11 @@ class ToDoTask extends Component {
 
     async hendleTaskClick(index, fatherIndex){
         const projectId = this.props.projectFromDB._id;
-        var task = this.props.projectFromDB.taskContainers[fatherIndex].tasks[index]
+        var task = this.props.projectFromDB.taskContainers[fatherIndex].tasks[index];
         task.sprintNum = -1;
         this.props.projectFromDB.taskContainers[fatherIndex].tasks[index] = task;
-        this.setState({})
+        store.dispatch(minusToTaskOnWork(fatherIndex, index))
+        this.setState({});
         await axios.put('/updateSprintNumInTask', {id:projectId, fatherIndex:fatherIndex, index:index, sprintNum:-1})
     }
 

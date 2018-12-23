@@ -26,7 +26,7 @@
 }
 .weekRectBlack{
   border: black 1px solid;
-  border-radius: 10px;
+  /* border-radius: 10px; */
   max-height: 20px;
   max-width: 20px;
   background: black;
@@ -35,7 +35,7 @@
 }
 .weekRectWhite{
   border: black 1px solid;
-  border-radius: 10px;
+  /* border-radius: 10px; */
   max-height: 20px;
   max-width: 20px;
   background: white;
