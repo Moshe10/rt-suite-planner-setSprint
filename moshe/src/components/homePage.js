@@ -114,10 +114,10 @@ class HomePage extends Component {
                 <button onClick={() => this.myCreateProject()}>Create Project</button>
                 <div className="row">
                     <div className="col-3">
-                        <label htmlFor="">choich date for start project</label>
+                        <label htmlFor="">choose date for start project</label>
                         <br />
                         <DatePicker
-                            selected={this.props.dataFromHomePage.startProject}
+                            selected={this.props.projectFromDB.startDate}
                             onSelect={this.handleChangeOfDatePicker}
                         />
                     </div>

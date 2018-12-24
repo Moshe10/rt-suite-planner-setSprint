@@ -12,7 +12,8 @@ class TaskContainer extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            display: false
+            display: false,
+            checkIfTaskStarted:false
         }
     }
     counter = [0,0,0]
@@ -38,21 +39,6 @@ class TaskContainer extends Component {
         this.updateData(fatherIndex, index)
     }
 
-    checkIfTaskStarted(container,index){
-        console.log('checkIfTaskStarted()');
-    
-        let counter = 0;
-        if (counter <= this.props.taskOnWork[this.props.fatherIndex]) {
-                container.tasks.map((task,taskIndex) => {
-                    if (task.started) {
-                        counter += task.length
-                        console.log(task.length);
-                        
-                    }
-                })
-        }
-        return counter;
-    }
 
     render() {
         return (
@@ -63,8 +49,7 @@ class TaskContainer extends Component {
                     </div>
                     task container name: {this.props.containerName} <br />
                     developer name: ---  , {}
-                    {/* CITS = checkIfTaskStarted() */}
-                    {this.checkIfTaskStarted(this.props.containerToCITS,this.props.fatherIndex) + this.props.taskOnWork[this.props.fatherIndex]} / {this.props.contLength} work days
+                    {this.props.taskOnWork[this.props.fatherIndex]} / {this.props.contLength} work days
                 <button className="btn-openTasks"
                     onClick={() => this.toggle()}
                     >

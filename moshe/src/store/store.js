@@ -41,15 +41,15 @@ var initState = {
                 name: 'back end', week: 0, developers: [], tasks: [
                     { from: 'back end', name: 'task1', length: 5, sprintNum: -1, started: null, status:null },
                     { from: 'back end', name: 'task2', length: 4, sprintNum: -1, started: null, status:null },
-                    { from: 'back end', name: 'task3', length: 3, sprintNum: -1, started: null, status:null },
+                    { from: 'back end', name: 'task3', length: 13, sprintNum: -1, started: null, status:null },
                     { from: 'back end', name: 'task4', length: 1, sprintNum: -1, started: null, status:null }
                 ]
             },
             {
                 name: 'front end', week: 0, developers: [], tasks: [
-                    { from: 'front end', name: 'task5', length: 7, sprintNum: 4, started: true, status:null },
+                    { from: 'front end', name: 'task5', length: 17, sprintNum: -1, started: null, status:null },
                     { from: 'front end', name: 'task6', length: 1, sprintNum: -1, started: null, status:null },
-                    { from: 'front end', name: 'task7', length: 1, sprintNum: 4, started: true, status:null },
+                    { from: 'front end', name: 'task7', length: 1, sprintNum: -1, started: null, status:null },
                     { from: 'front end', name: 'task8', length: 2, sprintNum: -1, started: null, status:null },
                 ]
             },
@@ -57,7 +57,7 @@ var initState = {
                 name: 'css', week: 0, developers: [], tasks: [
                     { from: 'css', name: 'task10', length: 9, sprintNum: -1, started: null, status:null },
                     { from: 'css', name: 'task11', length: 6, sprintNum: -1, started: null, status:null },
-                    { from: 'css', name: 'task11', length: 6, sprintNum: 1, started: true, status:null },
+                    { from: 'css', name: 'task11', length: 6, sprintNum: -1, started: null, status:null },
                     { from: 'css', name: 'task12', length: 3, sprintNum: -1, started: null, status:null },
                 ]
             }
@@ -108,7 +108,9 @@ const reducer = function (initState, action) {
         else alert('waiting to press on createProject...')
             return newState;
         case "START_PROJECT":
-            newState.project1.startDate = action.date;
+            newState.projectFromDB.startDate = action.date;
+            console.log( newState.projectFromDB.startDate);
+            
             return newState;
         case "SET_WEEKS_PROJECT":
             newState.projectLength.projectName = action.payload.proName;

@@ -35,7 +35,7 @@ class SetSprint extends Component {
             container.tasks.map( async (task, taskIndex) => {
                 if(task.sprintNum == this.props.currentSprint){
                     task.started = true;
-                    task.status = 'working'
+                    task.status = 'working';
                 }
             })
         })
@@ -114,7 +114,6 @@ class SetSprint extends Component {
                                     tasks={item.tasks}
                                     fatherIndex={index}
                                     // indexTaskOnWork={index}
-                                    containerToCITS={item}
                                 />
                             </ListGroup>
                             

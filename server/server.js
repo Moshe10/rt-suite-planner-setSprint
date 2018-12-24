@@ -20,9 +20,10 @@ app.post('/createProject', (req, res) => {
     
     let newProject = new AllProjectModel({
         name: req.body.name,
-        sprintLength:req.body.sprintLength,
+        sprintLength: req.body.sprintLength,
         developers: req.body.developers,
-        taskContainers:req.body.containers,
+        // startDate: req.body.startDate,
+        taskContainers: req.body.containers,
     })
 
     newProject.save(function (err, newProject) {

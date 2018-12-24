@@ -52,7 +52,7 @@ class DisplayScreenSprint extends Component {
                 offset = {0}
                 data = {{containers:this.props.projectFromDB.taskContainers.map((container) => {
                         return {contName:container.name,week:container.week,tasks:container.tasks.map((task) => {
-                        return {taskLength:task.length, status:"none"}})}}),
+                        return {taskLength:task.length, status:task.status}})}}),
                         projectLength:this.props.projectLength.length}}
                 />
             )
