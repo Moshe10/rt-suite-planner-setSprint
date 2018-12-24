@@ -10,18 +10,18 @@ import { updateWeekInTaskContainer } from '../../actions/actions'
 
 
 class DisplayScreenSprint extends Component {
-    constructor(props){
+    constructor(props) {
         super(props)
-       
+
     }
     // projectId = this.props.projectFromDB._id;
-    
-    
-    componentWillMount(){
-        this.calculateTheProLength(this.props.projectFromDB.name, this.props.projectFromDB.taskContainers );
+
+
+    componentWillMount() {
+        this.calculateTheProLength(this.props.projectFromDB.name, this.props.projectFromDB.taskContainers);
     }
 
-    calculateTheProLength(projectName, taskContainers){
+    calculateTheProLength(projectName, taskContainers) {
         let proLength = 0;
         let name = projectName;
         for (let i = 0; i < taskContainers.length; i++) {
@@ -29,52 +29,62 @@ class DisplayScreenSprint extends Component {
                 proLength += taskContainers[i].tasks[z].length;
             }
         }
-        let weeksOfPro = Math.ceil(proLength / 5)
-        store.dispatch(setWeeksOfProject(name, weeksOfPro ))
+        let weeksOfPro = Math.ceil(proLength / 5);
+        console.log("Weeks calculated and the result is: " + weeksOfPro);
+        store.dispatch(setWeeksOfProject(name, weeksOfPro))
     }
 
-    async hendleChangeWeekHandler( index, week){
+    async hendleChangeWeekHandler(index, week) {
         const projectId = this.props.projectFromDB._id;
-        console.log(index,week);
-        setTimeout(300,alert('this task container get week number ' + week)) ;
+        console.log(index, week);
+        // setTimeout(300,alert('this task container get week number ' + week)) ;
         store.dispatch(updateWeekInTaskContainer(index, week));
-        await axios.put('/updateWeekOfTaskContainer',{id:projectId, contIndex:index, contWeek:week});
+        await axios.put('/updateWeekOfTaskContainer', { id: projectId, contIndex: index, contWeek: week });
     }
 
     Toggle = () => {
         if (this.props.toggleSetSprint) {
+            let sentData = Object.assign({},{
+                containers: this.props.projectFromDB.taskContainers.map((container) => {
+                    return {
+                        contName: container.name, week: container.week, tasks: container.tasks.map((task) => {
+                            return { taskLength: task.length, status: task.status }
+                        })
+                    }
+                }),
+                projectLength: this.props.projectLength.length
+            });
+            // let michael = ;
+            // console.log("project length is: " + michael);
             return (
                 <PlanningBoard
-                cellHeight = {100}
-                cellWidth = {100}
-                firstCellWidth = {300}
-                changeWeekHandler = {this.hendleChangeWeekHandler.bind(this)}
-                offset = {0}
-                data = {{containers:this.props.projectFromDB.taskContainers.map((container) => {
-                        return {contName:container.name,week:container.week,tasks:container.tasks.map((task) => {
-                        return {taskLength:task.length, status:task.status}})}}),
-                        projectLength:this.props.projectLength.length}}
+                    cellHeight={100}
+                    cellWidth={100}
+                    firstCellWidth={300}
+                    changeWeekHandler={this.hendleChangeWeekHandler.bind(this)}
+                    offset={0}
+                    data={sentData}
                 />
             )
         }
         else {
             return (
-              <SetSprint/>
+                <SetSprint />
             )
         }
     }
 
     render() {
-        
-        return (
-        
-                <BrowserRouter>
-                    <div className="mainDiv">
-                        <Link to="/"></Link>
 
-                        <Route exact path='/' component={this.Toggle} />
-                    </div>
-                </BrowserRouter>
+        return (
+
+            <BrowserRouter>
+                <div className="mainDiv">
+                    <Link to="/"></Link>
+
+                    <Route exact path='/' component={this.Toggle} />
+                </div>
+            </BrowserRouter>
         )
     }
 }

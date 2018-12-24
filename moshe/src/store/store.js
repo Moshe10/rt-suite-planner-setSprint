@@ -15,7 +15,7 @@ var initState = {
     projectFromDB:{},
     projectLength:{
         projectName:'',
-        length:null,
+        length:10,
     },
     toggleSetSprint: true,
     TEST: true,
@@ -38,15 +38,15 @@ var initState = {
         ],
         containers: [
             {
-                name: 'back end', week: 0, developers: [], tasks: [
+                name: 'back end', week: -1, developers: [], tasks: [
                     { from: 'back end', name: 'task1', length: 5, sprintNum: -1, started: null, status:null },
                     { from: 'back end', name: 'task2', length: 4, sprintNum: -1, started: null, status:null },
-                    { from: 'back end', name: 'task3', length: 13, sprintNum: -1, started: null, status:null },
+                    { from: 'back end', name: 'task3', length: 100, sprintNum: -1, started: null, status:null },
                     { from: 'back end', name: 'task4', length: 1, sprintNum: -1, started: null, status:null }
                 ]
             },
             {
-                name: 'front end', week: 0, developers: [], tasks: [
+                name: 'front end', week: -1, developers: [], tasks: [
                     { from: 'front end', name: 'task5', length: 17, sprintNum: -1, started: null, status:null },
                     { from: 'front end', name: 'task6', length: 1, sprintNum: -1, started: null, status:null },
                     { from: 'front end', name: 'task7', length: 1, sprintNum: -1, started: null, status:null },
@@ -54,7 +54,7 @@ var initState = {
                 ]
             },
             {
-                name: 'css', week: 0, developers: [], tasks: [
+                name: 'css', week: -1, developers: [], tasks: [
                     { from: 'css', name: 'task10', length: 9, sprintNum: -1, started: null, status:null },
                     { from: 'css', name: 'task11', length: 6, sprintNum: -1, started: null, status:null },
                     { from: 'css', name: 'task11', length: 6, sprintNum: -1, started: null, status:null },
@@ -113,8 +113,11 @@ const reducer = function (initState, action) {
             
             return newState;
         case "SET_WEEKS_PROJECT":
-            newState.projectLength.projectName = action.payload.proName;
-            newState.projectLength.length = action.payload.length;
+            let newProjectLength = {...newState.projectLength};
+            newProjectLength.projectName = action.payload.proName;
+            newProjectLength.length = action.payload.length;
+            newState.projectLength = newProjectLength;
+            console.log(newState);
             return newState;
         case "UPDATE_TOGGLE_SET_SPRINT_TO_FALSE":
             newState.toggleSetSprint = false;
@@ -124,7 +127,14 @@ const reducer = function (initState, action) {
             newState.toggleSetSprint = true;
             return newState;
         case "UPDATE_WEEK_IN_TASK_CONT":
-            newState.projectFromDB.taskContainers[action.payload.index].week = action.payload.week;
+            let newProjectFromDB = {...newState.projectFromDB};
+            let newTC = newProjectFromDB.taskContainers.slice();
+            let newContainer = newTC[action.payload.index];
+            newContainer.week = action.payload.week;
+            newTC.taskContainers = newContainer;
+            newProjectFromDB.taskContainers = newTC;
+            newState.projectFromDB = newProjectFromDB
+            // taskContainers[action.payload.index].week = action.payload.week;
             return newState;
         case "PLUS_TO_TASK_ON_WORK":
             let contIndex1 = action.payload.contIndex;

@@ -21,7 +21,7 @@ export function functionalTaskContainer(properties) {
             cell++;
         }
         console.log(cell);
-        return cell;
+        return cell-1;
     }
 
     function handleDragMove(e, properties) {
@@ -58,7 +58,8 @@ export function functionalTaskContainer(properties) {
     }
 
     function handleDragEnd(e, properties) {
-        properties.changeWeekHandler(findWhereToLand(e.target.attrs.x, properties.firstCellWidth, properties.cellWidth,properties.offset));
+        let week = findWhereToLand(e.target.attrs.x, properties.firstCellWidth, properties.cellWidth,properties.offset);
+        properties.changeWeekHandler(week);
         e.target.to({
             duration: 0.05,
             easing: Konva.Easings.EaseIn,
@@ -66,15 +67,45 @@ export function functionalTaskContainer(properties) {
             scaleY: 1,
             shadowOffsetX: 5,
             shadowOffsetY: 5,
+            x:week > -1 ? (properties.firstCellWidth + (week - properties.offset) * properties.cellWidth) : 0
         });
+        if (week == -1) {
+            e.target.children.forEach((child) => {
+                let newWidth = properties.firstCellWidth - 10;
+                if (child.className === "Rect") {
+                    switch (child.getAttr("name").split(' ')[0]) {
+                        case "mainRect":
+                            child.to({
+                                duration: 0.01,
+                                width: newWidth
+                            });
+                            break;
+                        case "workingRect":
+                            child.to({
+                                duration: 0.01,
+                                width: newWidth * (properties.percentageDone + properties.percentageWorking)
+                            });
+                            break;
+                        case "doneRect":
+                            child.to({
+                                duration: 0.01,
+                                width: newWidth * properties.percentageDone
+                            });
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            });
+        }
     }
 
     return (
         <Group
             key={"container-" + properties.row}
-            x={properties.col > 0 ? (properties.firstCellWidth + (properties.col - 1 - properties.offset) * properties.cellWidth) : 0}
+            x={properties.col > -1 ? (properties.firstCellWidth + (properties.col - properties.offset) * properties.cellWidth) : 0}
             y={(properties.row + 1) * properties.cellHeight}
-            draggable={properties.draggable || true}
+            draggable={properties.draggable || false}
             onDragStart={(e) => handleDragStart(e, properties)}
             onDragMove={(e) => handleDragMove(e, properties)}
             onDragEnd={(e) => handleDragEnd(e, properties)}
@@ -83,7 +114,7 @@ export function functionalTaskContainer(properties) {
                 name={"mainRect of " + properties.row}
                 x={5}
                 y={5}
-                width={properties.col === 0 ? properties.firstCellWidth - 10 : ((Math.ceil(properties.length / 5)) * properties.cellWidth) - 10}
+                width={properties.col === -1 ? properties.firstCellWidth - 10 : ((Math.ceil(properties.length / 5)) * properties.cellWidth) - 10}
                 height={properties.cellHeight - 10}
                 fill="#5BC0EB"
                 shadowBlur={10}
@@ -93,7 +124,7 @@ export function functionalTaskContainer(properties) {
                 name={"workingRect of " + properties.row}
                 x={5}
                 y={5}
-                width={(properties.col === 0 ? properties.firstCellWidth - 10 : ((Math.ceil(properties.length / 5)) * properties.cellWidth) - 10) * (properties.percentageDone + properties.percentageWorking)}
+                width={(properties.col === -1 ? properties.firstCellWidth - 10 : ((Math.ceil(properties.length / 5)) * properties.cellWidth) - 10) * (properties.percentageDone + properties.percentageWorking)}
                 height={properties.cellHeight - 10}
                 fill="#FDE74C"
                 cornerRadius={5}
@@ -102,7 +133,7 @@ export function functionalTaskContainer(properties) {
                 name={"doneRect of " + properties.row}
                 x={5}
                 y={5}
-                width={(properties.col === 0 ? properties.firstCellWidth - 10 : ((Math.ceil(properties.length / 5)) * properties.cellWidth) - 10) * properties.percentageDone}
+                width={(properties.col === -1 ? properties.firstCellWidth - 10 : ((Math.ceil(properties.length / 5)) * properties.cellWidth) - 10) * properties.percentageDone}
                 height={properties.cellHeight - 10}
                 fill="#9BC53D"
                 cornerRadius={5}
