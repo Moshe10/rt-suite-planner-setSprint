@@ -6,35 +6,31 @@ import { connect } from 'react-redux';
 class StartDate extends Component {
 
 
-      createWeeks(len,startDate) {
+   
+    createWeeks(len, mystartDate) {
         let weeksArr = [];
-        let endWeeksArr=[]
-        let startDate = startDate;
+        let endWeeksArr = []
+        let startDate = mystartDate;
         // weeksArr.push(startDate)
-        console.log("1", startDate);
         let day = startDate.getDate();
         let month = startDate.getMonth();
         let year = startDate.getFullYear();
+        weeksArr.push(startDate)
         let start = Date.UTC(year, month, day);
-        console.log("2", start);
-        let week=start
-        let endWeek=start
+        let week = start
+        let endWeek = start
         for (let i = 0; i < len; i++) {
-           week +=604800000;
-           endWeek =week-86400000
-          console.log("3", week);
-          console.log("3", endWeek);
-          let weekDate = new Date(week);
-          let endWeekDate = new Date(endWeek)
-          console.log("4", weekDate);
-          console.log("4", endWeekDate);
-          weeksArr.push(weekDate)
-          endWeeksArr.push(endWeekDate)
+            week += 604800000;
+            endWeek = week - 86400000
+            let weekDate = new Date(week);
+            let endWeekDate = new Date(endWeek)
+            weeksArr.push(weekDate)
+            endWeeksArr.push(endWeekDate)
         }
-        console.log(weeksArr.length);
-        console.log("end  ",endWeeksArr.length);
+        let end = endWeek + 604800000
+        let end1 = new Date(end)
+        endWeeksArr.push(end1)
         let newWeeksArr = []
-        let newEndWeeksArr= []
         for (let i = 0; i < weeksArr.length; i++) {
           let day = weeksArr[i].getDate();
           let month = weeksArr[i].getMonth()+1;
@@ -46,17 +42,23 @@ class StartDate extends Component {
           newWeeksArr.push(startWeek)
         }
         console.log(newWeeksArr);
-    
-      }
-    
+        
+
+    }
+
 
     render() {
         return (
             <div>
-                {this.createWeeks(10,this.props.projectFromDB.startDate)}
+                {this.createWeeks(10, this.props.projectFromDB.startDate)}
             </div>
         );
     }
 }
 
 export default connect(state => state)(StartDate);
+
+
+// let day1 = endWeeksArr[i].getDate();
+// let month1 = endWeeksArr[i].getMonth()+1;
+// let year1 = endWeeksArr[i].getFullYear();

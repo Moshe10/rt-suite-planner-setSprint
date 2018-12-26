@@ -20,7 +20,6 @@ export function functionalTaskContainer(properties) {
         while (x > firstCellWidth + (cell - offset) * cellWidth) {
             cell++;
         }
-        console.log(cell);
         return cell-1;
     }
 

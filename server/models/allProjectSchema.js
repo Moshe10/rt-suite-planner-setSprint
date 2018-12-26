@@ -19,7 +19,7 @@ const containersSchema  = new Schema({
 
 const AllprojectModel = new Schema({
     name: String,
-    startDate: String,
+    startDate: Date,
     dueDate: String, // can be calculated when we know start date and the project's duration
     sprintLength: Number,
     // project's task completion resolutiom e.g. [20,60,80] represents a project

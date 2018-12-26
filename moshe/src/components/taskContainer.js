@@ -16,8 +16,7 @@ class TaskContainer extends Component {
             checkIfTaskStarted:false
         }
     }
-    counter = [0,0,0]
-    counter = 0;
+
     sprintNum = this.props.currentSprint;
     // taskOnWork = 0; 
 

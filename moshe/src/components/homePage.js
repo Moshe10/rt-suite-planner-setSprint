@@ -23,9 +23,11 @@ class HomePage extends Component {
         this.saveData = this.saveData.bind(this);
         this.DeleteAll = this.DeleteAll.bind(this);
         this.DeleteLast = this.DeleteLast.bind(this);
-        this.state = {}
+        this.hendleChangeProjectName = this.hendleChangeProjectName.bind(this);
+        this.state = {
+            projectName:'',
+        }
     }
-  
 
     componentWillMount(){
 
@@ -33,16 +35,26 @@ class HomePage extends Component {
     
     async myCreateProject(){
         console.log('createProject');
-        await axios.post('http://10.2.2.109:3000/createProject', this.props.project1)
+        let proName = this.state.projectName;
+        console.log(proName);
+        await axios.post('http://10.2.2.109:3000/createProject', {projectName: proName, project: this.props.project})
         .then((req, res) => {
         })
         await axios.get('/getAllProject').
         then((res) => {
-            if (res.data.length == 1) {
+            // if (res.data.length == 1) {
                 let myProject = res.data[0];
                 store.dispatch(createProject(myProject));
-            }
+            // }
         })
+    }
+
+    hendleChangeProjectName(e){
+        let proName = e.target.value;
+        this.setState({projectName: proName})
+        
+        
+        
     }
 
     handleChangeOfDatePicker(date) {
@@ -103,7 +115,6 @@ class HomePage extends Component {
         }
     }
 
-
     render() {
         // let percentageArray = [...this.props.dataFromHomePage.resolutionTasks];
         // var lastSelect = percentageArray[percentageArray.length - 1]
@@ -111,7 +122,10 @@ class HomePage extends Component {
         
         return (
             <div>
-                <button onClick={() => this.myCreateProject()}>Create Project</button>
+
+                <button onClick={() => this.myCreateProject()}>Create Project</button> 
+                <input onChange={this.hendleChangeProjectName} placeholder="insert project name" type="text"/>
+              
                 <div className="row">
                     <div className="col-3">
                         <label htmlFor="">choose date for start project</label>

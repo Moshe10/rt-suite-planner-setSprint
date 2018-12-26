@@ -19,9 +19,9 @@ var initState = {
     },
     toggleSetSprint: true,
     TEST: true,
-    project1: {
-        name: 'project1',
-        startDate: new Date(),
+    project: {
+        name: '',
+        startDate: null,
         dueDate: null,
         sprintLength: null,
         resolution: [0],
@@ -41,7 +41,7 @@ var initState = {
                 name: 'back end', week: -1, developers: [], tasks: [
                     { from: 'back end', name: 'task1', length: 5, sprintNum: -1, started: null, status:null },
                     { from: 'back end', name: 'task2', length: 4, sprintNum: -1, started: null, status:null },
-                    { from: 'back end', name: 'task3', length: 100, sprintNum: -1, started: null, status:null },
+                    { from: 'back end', name: 'task3', length: 10, sprintNum: -1, started: null, status:null },
                     { from: 'back end', name: 'task4', length: 1, sprintNum: -1, started: null, status:null }
                 ]
             },
@@ -117,7 +117,6 @@ const reducer = function (initState, action) {
             newProjectLength.projectName = action.payload.proName;
             newProjectLength.length = action.payload.length;
             newState.projectLength = newProjectLength;
-            console.log(newState);
             return newState;
         case "UPDATE_TOGGLE_SET_SPRINT_TO_FALSE":
             newState.toggleSetSprint = false;

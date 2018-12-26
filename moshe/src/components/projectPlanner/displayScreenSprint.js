@@ -30,13 +30,11 @@ class DisplayScreenSprint extends Component {
             }
         }
         let weeksOfPro = Math.ceil(proLength / 5);
-        console.log("Weeks calculated and the result is: " + weeksOfPro);
         store.dispatch(setWeeksOfProject(name, weeksOfPro))
     }
 
     async hendleChangeWeekHandler(index, week) {
         const projectId = this.props.projectFromDB._id;
-        console.log(index, week);
         // setTimeout(300,alert('this task container get week number ' + week)) ;
         store.dispatch(updateWeekInTaskContainer(index, week));
         await axios.put('/updateWeekOfTaskContainer', { id: projectId, contIndex: index, contWeek: week });
@@ -47,15 +45,13 @@ class DisplayScreenSprint extends Component {
             let sentData = Object.assign({},{
                 containers: this.props.projectFromDB.taskContainers.map((container) => {
                     return {
-                        contName: container.name, week: container.week, tasks: container.tasks.map((task) => {
+                        contName: container.name, week: container.week, developers:container.developers, tasks: container.tasks.map((task) => {
                             return { taskLength: task.length, status: task.status }
                         })
                     }
                 }),
                 projectLength: this.props.projectLength.length
             });
-            // let michael = ;
-            // console.log("project length is: " + michael);
             return (
                 <PlanningBoard
                     cellHeight={100}

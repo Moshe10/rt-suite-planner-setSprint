@@ -22,6 +22,7 @@ class SetSprint extends Component {
         };
         this.creaetWeekRect = this.creaetWeekRect.bind(this)
     }
+    sprintLength = this.props.projectFromDB.sprintLength
     currentSprint = this.props.currentSprint
     currentContLength = 0;
     contWeek = null;
@@ -54,28 +55,30 @@ class SetSprint extends Component {
     }
 
     creaetWeekRect = (contLength,name) => {
-        const sprintLength = this.props.projectFromDB.sprintLength;
+        // const sprintLength = this.props.projectFromDB.sprintLength;
         let weeksOfSprintArr = [];
         let weeksOfProjectArr = [];
         
         for (let i = this.contWeek; i < (this.contWeek + contLength); i++) {
-            let whitediv = <div key={i} className="weekRectWhite"></div>
-            let blackdiv = <div key={i} className="weekRectBlack"></div>
+            // console.log(this.contWeek);
+            
+            let whiteDiv = <div key={i} className="weekRectWhite"></div>
+            let blackDiv = <div key={i} className="weekRectBlack"></div>
             // console.log(name,this.currentSprint,'-----------------------------------------------------');
             // console.log('i',i);
             // console.log('sprint num: ', parseInt(i / sprintLength));
             // console.log('-----------------------------------------------------');
-            if(this.currentSprint == parseInt(i / sprintLength)){
-                weeksOfProjectArr.push(blackdiv)
+            if(this.currentSprint == parseInt(i / this.sprintLength) && this.contWeek != -1){
+                weeksOfProjectArr.push(blackDiv)
             }
-            else weeksOfProjectArr.push(whitediv)
+            else weeksOfProjectArr.push(whiteDiv)
         }
         // console.log('weeksOfProjectArr.length',weeksOfProjectArr.length);
         // console.log('contLength',contLength);
         // console.log('sprintLength',sprintLength);
         // for (let i = 0; i < sprintLength; i++) {
-        //     let blackdiv = <div key={i} className="weekRectBlack"></div>
-        //         weeksOfSprintArr.push(blackdiv)
+        //     let blackDiv = <div key={i} className="weekRectBlack"></div>
+        //         weeksOfSprintArr.push(blackDiv)
         // }
         // weeksOfProjectArr.splice(indexInSprint,sprintLength,weeksOfSprintArr)
         return weeksOfProjectArr;
@@ -85,18 +88,6 @@ class SetSprint extends Component {
         store.dispatch(updateToggleSetSprinToTrue());
     }
 
-    // filltaskOnWork = () => {
-    //     let tempArr = [];
-    //     let tempNum = 0;
-    //     if(!jquery.isEmptyObject(this.props.projectFromDB) && tempNum == 0){
-    //         this.props.projectFromDB.taskContainers.map((cont, index) => {
-    //             tempArr.push(0)
-    //         })
-    //         tempNum ++;
-    //         store.dispatch(fillTaskOnWorkArr(tempArr))
-    //     }
-    // }
-
     buildingBankTasks = () => {
         if (!jquery.isEmptyObject(this.props.projectFromDB)) {
             return (
@@ -104,6 +95,16 @@ class SetSprint extends Component {
                     {this.props.projectFromDB.taskContainers.map((item, index) => {
                         let contLength = this.calculateLengthCont(item);
                         this.contWeek = item.week;
+                        console.log(this.contWeek);
+                        console.log(contLength);
+                        
+                        for (let i = this.contWeek; i < (this.contWeek + contLength); i++) {
+                            // console.log("i",i);
+                            if (this.currentSprint == parseInt(i / this.sprintLength)) {
+                                    console.log('i',i);
+                                    
+                            }
+                        }
                         return (
                             <ListGroup key={index}>
                                 <TaskContainer
@@ -113,10 +114,8 @@ class SetSprint extends Component {
                                     contLength={this.currentContLength}
                                     tasks={item.tasks}
                                     fatherIndex={index}
-                                    // indexTaskOnWork={index}
                                 />
                             </ListGroup>
-                            
                         )
                     })}
                 </div>

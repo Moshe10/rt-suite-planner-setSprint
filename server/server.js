@@ -4,7 +4,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const AllProjectModel = require('./models/AllprojectSchema');
 
-var mongoPath = 'mongodb://127.0.0.1/rt-suite-planner';
+var mongoPath = 'mongodb://127.0.0.1/rt';
 
 mongoose.connect(mongoPath, { useNewUrlParser: true });
 var mongooseDb = mongoose.connection;
@@ -13,17 +13,19 @@ const app = express();
 
 app.use(bodyParser.json());
 
-
+var proName = '';
 // create the all project in mongoose. 
 app.post('/createProject', (req, res) => {
     console.log("create project in server POST");
+    proName = req.body.projectName;
+    console.log(proName);
     
     let newProject = new AllProjectModel({
-        name: req.body.name,
-        sprintLength: req.body.sprintLength,
-        developers: req.body.developers,
-        // startDate: req.body.startDate,
-        taskContainers: req.body.containers,
+        name: req.body.projectName,
+        sprintLength: req.body.project.sprintLength,
+        developers: req.body.project.developers,
+        startDate: req.body.project.startDate,
+        taskContainers: req.body.project.containers,
     })
 
     newProject.save(function (err, newProject) {
@@ -37,7 +39,7 @@ app.post('/createProject', (req, res) => {
 
 // get to the client side the all project.
 app.get('/getAllProject', (req, res) => {
-    AllProjectModel.find({}, (err, project) => {
+    AllProjectModel.find({name:proName}, (err, project) => {
         res.json(project)
     })
 })
