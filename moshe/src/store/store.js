@@ -108,9 +108,10 @@ const reducer = function (initState, action) {
         else alert('waiting to press on createProject...')
             return newState;
         case "START_PROJECT":
+        if (!jquery.isEmptyObject(newState.projectFromDB)) {
             newState.projectFromDB.startDate = action.date;
             console.log( newState.projectFromDB.startDate);
-            
+            }
             return newState;
         case "SET_WEEKS_PROJECT":
             let newProjectLength = {...newState.projectLength};
@@ -132,7 +133,7 @@ const reducer = function (initState, action) {
             newContainer.week = action.payload.week;
             newTC.taskContainers = newContainer;
             newProjectFromDB.taskContainers = newTC;
-            newState.projectFromDB = newProjectFromDB
+            newState.projectFromDB = newProjectFromDB;
             // taskContainers[action.payload.index].week = action.payload.week;
             return newState;
         case "PLUS_TO_TASK_ON_WORK":
@@ -155,7 +156,6 @@ const reducer = function (initState, action) {
             newState.taskOnWork = action.arr;
             return newState;
         case "SELECT_DEV_TO_CONT":
-            console.log(action.payload);
             let myNewProjectFromDB = {...newState.projectFromDB};
             let myNewTC = myNewProjectFromDB.taskContainers.slice();
             let myNewContainer = myNewTC[action.payload.index];
@@ -163,8 +163,16 @@ const reducer = function (initState, action) {
             myNewTC.taskContainers = myNewContainer;
             myNewProjectFromDB.taskContainers = myNewTC;
             newState.projectFromDB = myNewProjectFromDB
-            console.log(newState.projectFromDB.taskContainers[action.payload.index]);
-            
+            return newState;
+        case "LOCK_SPRINT":
+        //  payload:{contIndex:contIndex,taskIndex:taskIndex}
+            let newProjectFromDb3 = {...newState.projectFromDB};
+            newProjectFromDb3.taskContainers[action.payload.contIndex].tasks[action.payload.taskIndex].started = true;
+            newProjectFromDb3.taskContainers[action.payload.contIndex].tasks[action.payload.taskIndex].status = 'working';
+            newState.projectFromDB = newProjectFromDb3;
+            return newState;
+
+
         default:
             return newState
     }

@@ -8,7 +8,7 @@ import TaskContainer from './taskContainer';
 import ToDoTask from './toDoTask';
 import { ListGroup, ListGroupItem } from 'reactstrap';
 import { Button, Badge } from 'reactstrap';
-import { fillTaskOnWorkArr, updateToggleSetSprinToTrue } from '../actions/actions';
+import { fillTaskOnWorkArr, updateToggleSetSprinToTrue, lockSprint } from '../actions/actions';
 import jquery from 'jquery';
 
 
@@ -18,7 +18,7 @@ class SetSprint extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            // contWeek:null
+            
         };
         this.creaetWeekRect = this.creaetWeekRect.bind(this)
     }
@@ -35,8 +35,7 @@ class SetSprint extends Component {
         this.props.projectFromDB.taskContainers.map( async (container, contIndex) => {
             container.tasks.map( async (task, taskIndex) => {
                 if(task.sprintNum == this.props.currentSprint){
-                    task.started = true;
-                    task.status = 'working';
+                    store.dispatch(lockSprint(contIndex,taskIndex))
                 }
             })
         })
@@ -55,32 +54,18 @@ class SetSprint extends Component {
     }
 
     creaetWeekRect = (contLength,name) => {
-        // const sprintLength = this.props.projectFromDB.sprintLength;
-        let weeksOfSprintArr = [];
         let weeksOfProjectArr = [];
         
         for (let i = this.contWeek; i < (this.contWeek + contLength); i++) {
-            // console.log(this.contWeek);
             
             let whiteDiv = <div key={i} className="weekRectWhite"></div>
             let blackDiv = <div key={i} className="weekRectBlack"></div>
-            // console.log(name,this.currentSprint,'-----------------------------------------------------');
-            // console.log('i',i);
-            // console.log('sprint num: ', parseInt(i / sprintLength));
-            // console.log('-----------------------------------------------------');
+
             if(this.currentSprint == parseInt(i / this.sprintLength) && this.contWeek != -1){
                 weeksOfProjectArr.push(blackDiv)
             }
             else weeksOfProjectArr.push(whiteDiv)
         }
-        // console.log('weeksOfProjectArr.length',weeksOfProjectArr.length);
-        // console.log('contLength',contLength);
-        // console.log('sprintLength',sprintLength);
-        // for (let i = 0; i < sprintLength; i++) {
-        //     let blackDiv = <div key={i} className="weekRectBlack"></div>
-        //         weeksOfSprintArr.push(blackDiv)
-        // }
-        // weeksOfProjectArr.splice(indexInSprint,sprintLength,weeksOfSprintArr)
         return weeksOfProjectArr;
     }
 
@@ -95,28 +80,24 @@ class SetSprint extends Component {
                     {this.props.projectFromDB.taskContainers.map((item, index) => {
                         let contLength = this.calculateLengthCont(item);
                         this.contWeek = item.week;
-                        console.log(this.contWeek);
-                        console.log(contLength);
                         
                         for (let i = this.contWeek; i < (this.contWeek + contLength); i++) {
-                            // console.log("i",i);
-                            if (this.currentSprint == parseInt(i / this.sprintLength)) {
-                                    console.log('i',i);
-                                    
+                            if (this.currentSprint == parseInt(i / this.sprintLength) && this.contWeek != -1) {
+                                    return (
+                                        <ListGroup key={index}>
+                                            <TaskContainer
+                                                key={index}
+                                                creaetWeekRect={this.creaetWeekRect(contLength,item.name)}
+                                                containerName={item.name}
+                                                contLength={this.currentContLength}
+                                                tasks={item.tasks}
+                                                fatherIndex={index}
+                                                developers={item.developers[0].name}
+                                            />
+                                        </ListGroup>
+                                    )
                             }
                         }
-                        return (
-                            <ListGroup key={index}>
-                                <TaskContainer
-                                    key={index}
-                                    creaetWeekRect={this.creaetWeekRect(contLength,item.name)}
-                                    containerName={item.name}
-                                    contLength={this.currentContLength}
-                                    tasks={item.tasks}
-                                    fatherIndex={index}
-                                />
-                            </ListGroup>
-                        )
                     })}
                 </div>
             )
@@ -129,17 +110,24 @@ class SetSprint extends Component {
                 <div>
                     {this.props.projectFromDB.taskContainers.map((item, index) => {
                         let contLength = this.calculateLengthCont(item);
-                        return (
-                            <ListGroup key={index}>
-                                <ToDoTask
-                                    key={index}
-                                    creaetWeekRect={this.creaetWeekRect(contLength)}
-                                    containerName={item.name}
-                                    tasks={item.tasks}
-                                    fatherIndex={index}
-                                />
-                            </ListGroup>
-                        )
+                        this.contWeek = item.week;
+
+                        for (let i = this.contWeek; i < (this.contWeek + contLength); i++) {
+                            if (this.currentSprint == parseInt(i / this.sprintLength) && this.contWeek != -1) {
+                                return (
+                                    <ListGroup key={index}>
+                                        <ToDoTask
+                                            key={index}
+                                            creaetWeekRect={this.creaetWeekRect(contLength)}
+                                            containerName={item.name}
+                                            tasks={item.tasks}
+                                            fatherIndex={index}
+                                            developers={item.developers[0].name}
+                                        />
+                                    </ListGroup>
+                                )
+                            }
+                        }
                     })}
                 </div>
             )

@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-var taskSchema = new Schema({
+const taskSchema = new Schema({
     from: String, // to equale task to container
     name: String, // task name
     length: Number, // length of task in development days (we will sum them to generate the length of a container) - to check? the data might come in in work hours (ask Effort team)
@@ -10,10 +10,17 @@ var taskSchema = new Schema({
     status: String // when the task is get sprint number he change to 'working' and when the task is done he change to 'done' else he on 'none' or 'nuul'.
 });
 
+const developerSchema = new Schema({
+    id:String,
+    name:String,
+    email:String,
+    busy:Boolean,
+})
+
 const containersSchema  = new Schema({
     name: String, // container name
     week: Number, // the first project week it was asigned to (where 0 is the first week of the project)
-    developers: [String], // we will represent a developer by is e-mail address
+    developers: [developerSchema], // we will represent a developer by is e-mail address
     tasks:[taskSchema]
 });
 

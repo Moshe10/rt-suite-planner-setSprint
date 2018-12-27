@@ -13,17 +13,15 @@ class SelectDev extends Component {
     constructor(props) {
         super(props);
     
-        this.toggle = this.toggle.bind(this);
         this.state = {
-          dropdownOpen: false,
           developers:[],
         };
     }
+    projectId = this.props.projectFromDB._id;
     
     componentWillMount() {
         axios.get('http://5c237c1a5db0f6001345ff30.mockapi.io/developers')
         .then((response) => {
-            console.log("response", response.data)
             this.setState({developers:response.data})
           })
           .catch(err => {
@@ -31,11 +29,6 @@ class SelectDev extends Component {
           })
     }
 
-    toggle() {
-        this.setState(prevState => ({
-          dropdownOpen: !prevState.dropdownOpen
-        }));
-    }
 
     fillDevSelect() {
         var arr = [<option style={{color:"blue"}}>select dev</option>]
@@ -47,14 +40,16 @@ class SelectDev extends Component {
 
     devSelect(e,contIndex){
         let myDevName = e.target.value;
-        this.state.developers.map((dev, index) => {
+        let id = this.projectId;
+        this.state.developers.map( async (dev, index) => {
             if (myDevName === dev.name) {
                 store.dispatch(selectDevToCont(dev,contIndex))
+                await axios.put('/updateDevForCont', {proId:id,developer:dev,index:contIndex})
             }
         })
     }
 
-    diForFormGroup = {
+    divForFormGroup = {
         marginTop: '80px',
         marginBottom: '80px',
     }
@@ -66,7 +61,7 @@ class SelectDev extends Component {
             <div className="select-dev">
                 {this.props.projectFromDB.taskContainers.map((cont, contIndex) => {
                     return(
-                        <div style={this.diForFormGroup}>
+                        <div style={this.divForFormGroup}>
                         <FormGroup>
                             <Input
                             type="select"

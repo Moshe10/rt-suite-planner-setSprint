@@ -87,6 +87,7 @@ app.put('/updateResolution&date&SprintLength', ((req, res) => {
         // console.log(project);
         project.resolution = req.body.resolution;
         project.sprintLength = req.body.sprintLength;
+        project.startDate = req.body.startDate;
         project.save((err, project) => {
             
         })
@@ -106,6 +107,24 @@ app.put('/lockSprint', ((req, res) => {
             
         })
       });
+}))
+
+app.put('/updateDevForCont', ((req, res) => {
+    AllProjectModel.findById(req.body.proId, (err, project) => {
+        if(!err) {
+            project.taskContainers[req.body.index].developers.push(req.body.developer);
+            project.save((err) => {
+                if (!err) {
+                    res.send('developer added');
+                } else {
+                    res.send(err);
+                }
+            });
+        }
+        else {
+            res.send(err);
+        }
+    })
 }))
 
 

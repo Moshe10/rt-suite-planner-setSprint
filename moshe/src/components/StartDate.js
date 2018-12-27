@@ -41,9 +41,6 @@ class StartDate extends Component {
           let startWeek = [day +"/"+ month + "/"+year , day1 +"/"+ month1 + "/"+year1] 
           newWeeksArr.push(startWeek)
         }
-        console.log(newWeeksArr);
-        
-
     }
 
 
@@ -57,8 +54,3 @@ class StartDate extends Component {
 }
 
 export default connect(state => state)(StartDate);
-
-
-// let day1 = endWeeksArr[i].getDate();
-// let month1 = endWeeksArr[i].getMonth()+1;
-// let year1 = endWeeksArr[i].getFullYear();

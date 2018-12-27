@@ -47,7 +47,7 @@ class TaskContainer extends Component {
                         {this.props.creaetWeekRect}
                     </div>
                     task container name: {this.props.containerName} <br />
-                    developer name: ---  , {}
+                    developer name: {this.props.developers}  , {}
                     {this.props.taskOnWork[this.props.fatherIndex]} / {this.props.contLength} work days
                 <button className="btn-openTasks"
                     onClick={() => this.toggle()}

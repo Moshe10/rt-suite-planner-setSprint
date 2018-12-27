@@ -46,4 +46,7 @@ export function fillTaskOnWorkArr(arr) {
 export function selectDevToCont(dev,contIndex) {
     return { type: "SELECT_DEV_TO_CONT", payload:{developer:dev,index:contIndex} }
 }
+export function lockSprint(contIndex,taskIndex) {
+    return { type: "LOCK_SPRINT", payload:{contIndex:contIndex,taskIndex:taskIndex} }
+}
 
