@@ -156,9 +156,11 @@ class HomePage extends Component {
                         </div>
                     </div>
                 </div>
-                <button onClick={() => this.saveData()}>svae Data and go to the planning page</button>
+                <button onClick={() => this.saveData()}>save Data and go to the planning page</button>
             </div>
         )
+
+        
     }
 }
 

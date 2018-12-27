@@ -154,6 +154,17 @@ const reducer = function (initState, action) {
         case "FILL_TASK_ON_WORK_ARR":
             newState.taskOnWork = action.arr;
             return newState;
+        case "SELECT_DEV_TO_CONT":
+            console.log(action.payload);
+            let myNewProjectFromDB = {...newState.projectFromDB};
+            let myNewTC = myNewProjectFromDB.taskContainers.slice();
+            let myNewContainer = myNewTC[action.payload.index];
+            myNewContainer.developers.push(action.payload.developer);
+            myNewTC.taskContainers = myNewContainer;
+            myNewProjectFromDB.taskContainers = myNewTC;
+            newState.projectFromDB = myNewProjectFromDB
+            console.log(newState.projectFromDB.taskContainers[action.payload.index]);
+            
         default:
             return newState
     }

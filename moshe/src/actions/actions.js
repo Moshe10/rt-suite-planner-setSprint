@@ -43,4 +43,7 @@ export function minusToTaskOnWork(fatherIndex, index) {
 export function fillTaskOnWorkArr(arr) {
     return { type: "FILL_TASK_ON_WORK_ARR", payload:arr }
 }
+export function selectDevToCont(dev,contIndex) {
+    return { type: "SELECT_DEV_TO_CONT", payload:{developer:dev,index:contIndex} }
+}
 

@@ -4,6 +4,8 @@ import { functionalTaskContainer } from "./taskContainer";
 import Buttons from './buttonSetSprint';
 import { connect } from 'react-redux';
 import StartDate from '../StartDate';
+import SelectDev from './SelectDev';
+
 
 class PlanningBoard extends Component {
     constructor(props) {
@@ -41,6 +43,11 @@ class PlanningBoard extends Component {
         }
 
         return (
+            <div className="row">
+            <div className="col-1">
+                <SelectDev/>
+            </div>
+            <div className="col-10">
             <div style={{
                 paddingRight: window.innerWidth * 0.05,
                 paddingLeft: window.innerWidth * 0.05,
@@ -93,6 +100,9 @@ class PlanningBoard extends Component {
                 <Buttons />
                 <StartDate/>
             </div>
+            </div>
+        </div>
+        
         );
     }
 }
