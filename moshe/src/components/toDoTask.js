@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { ListGroup, ListGroupItem } from 'reactstrap';
 import axios from 'axios';
 import store from '../store/store';
-import { minusToTaskOnWork } from '../actions/actions';
+import { minusToTaskOnWork, updateSprintNumInTask } from '../actions/actions';
 
 
 class ToDoTask extends Component {
@@ -20,14 +20,16 @@ class ToDoTask extends Component {
         this.setState({ display: !this.state.display })
     }
 
-    async hendleTaskClick(index, fatherIndex){
-        const projectId = this.props.projectFromDB._id;
-        var task = this.props.projectFromDB.taskContainers[fatherIndex].tasks[index];
-        task.sprintNum = -1;
-        this.props.projectFromDB.taskContainers[fatherIndex].tasks[index] = task;
-        store.dispatch(minusToTaskOnWork(fatherIndex, index))
+    async hendleTaskClick(fatherIndex, taskIndex){
+        // var task = this.props.projectFromDB.taskContainers[fatherIndex].tasks[index];
+        // task.sprintNum = -1;
+        // this.props.projectFromDB.taskContainers[fatherIndex].tasks[index] = task;
+        const num = -1;
+        store.dispatch(updateSprintNumInTask(fatherIndex, taskIndex, num));
+        store.dispatch(minusToTaskOnWork(fatherIndex, taskIndex))
         this.setState({});
-        await axios.put('/updateSprintNumInTask', {id:projectId, fatherIndex:fatherIndex, index:index, sprintNum:-1})
+        const projectId = this.props.projectFromDB._id;
+        await axios.put('/updateSprintNumInTask', {id:projectId, fatherIndex:fatherIndex, taskIndex:taskIndex, sprintNum:-1})
     }
 
     render() {
@@ -54,7 +56,7 @@ class ToDoTask extends Component {
                             color="success"
                             tag="button" 
                             action
-                            onClick={() => this.hendleTaskClick(index, this.props.fatherIndex)}
+                            onClick={() => this.hendleTaskClick(this.props.fatherIndex, index)}
                         >
                             {item.name},  {}
                             {item.length} Work Days {}

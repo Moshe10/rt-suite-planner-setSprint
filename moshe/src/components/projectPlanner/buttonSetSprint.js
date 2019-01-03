@@ -23,10 +23,11 @@ class Buttons extends Component {
         marginLeft: this.state.firstCellWidth + 'px'
     }
   
-    createBtnForsetSprint(num) {
+    createBtnForsetSprint(num, offset,maxCellsPerScreen) {
         let arr = [];
         let checkNum = null;
-        for (let i = 0; i < num; i++) {
+        let sprintAmount = Math.min(maxCellsPerScreen, num - offset);
+        for (let i = offset; i < offset + sprintAmount; i+=this.props.projectFromDB.sprintLength) {
             let sprintNum = parseInt(i / this.props.projectFromDB.sprintLength);
             if (sprintNum != checkNum) {
                 arr.push(<Btn
@@ -45,7 +46,7 @@ class Buttons extends Component {
         return (
 
             <div style={this.mainDivCss}>
-                {this.createBtnForsetSprint(this.props.projectLength.length)}
+                {this.createBtnForsetSprint(this.props.projectLength.length, this.props.offset, this.props.maxCellsPerScreen)}
             </div>
         );
     }

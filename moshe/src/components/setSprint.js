@@ -8,7 +8,7 @@ import TaskContainer from './taskContainer';
 import ToDoTask from './toDoTask';
 import { ListGroup, ListGroupItem } from 'reactstrap';
 import { Button, Badge } from 'reactstrap';
-import { fillTaskOnWorkArr, updateToggleSetSprinToTrue, lockSprint } from '../actions/actions';
+import { fillTaskOnWorkArr, updateToggleSetSprinToTrue, lockSprint, fillZerosIntaskOnWorkArrInStore } from '../actions/actions';
 import jquery from 'jquery';
 
 
@@ -26,6 +26,19 @@ class SetSprint extends Component {
     currentSprint = this.props.currentSprint
     currentContLength = 0;
     contWeek = null;
+
+    componentDidMount(){
+        store.dispatch(fillZerosIntaskOnWorkArrInStore(this.fillTheTaskOnWorkArrInStore()))
+    }
+
+    fillTheTaskOnWorkArrInStore ()  {
+            let zeroArr = [];
+            this.props.projectFromDB.taskContainers.map((cont) => {
+                zeroArr.push(0);
+            })
+            return zeroArr;
+    }
+
     updateOfterLockSprint(projecrId, taskContainers){
         axios.put('/lockSprint', {projectId:projecrId, taskContainers:taskContainers});
     }
@@ -73,6 +86,15 @@ class SetSprint extends Component {
         store.dispatch(updateToggleSetSprinToTrue());
     }
 
+    checkIfContHaveDev(cont){
+        if (cont.developers.length > 0){
+            return cont.developers[0].name
+        }
+        else{
+            return 'no developers'
+        } 
+    }
+
     buildingBankTasks = () => {
         if (!jquery.isEmptyObject(this.props.projectFromDB)) {
             return (
@@ -92,7 +114,8 @@ class SetSprint extends Component {
                                                 contLength={this.currentContLength}
                                                 tasks={item.tasks}
                                                 fatherIndex={index}
-                                                developers={item.developers[0].name}
+                                                developers={this.checkIfContHaveDev(item)}
+                                                // developers={item.developers[0]}
                                             />
                                         </ListGroup>
                                     )
@@ -122,7 +145,8 @@ class SetSprint extends Component {
                                             containerName={item.name}
                                             tasks={item.tasks}
                                             fatherIndex={index}
-                                            developers={item.developers[0].name}
+                                            developers={this.checkIfContHaveDev(item)}
+                                            // developers={item.developers[0]}
                                         />
                                     </ListGroup>
                                 )

@@ -17,6 +17,9 @@ export function functionalTaskContainer(properties) {
 
     function findWhereToLand(x, firstCellWidth, cellWidth, offset) {
         let cell = 0;
+        if (x<firstCellWidth){
+            return -1;
+        }
         while (x > firstCellWidth + (cell - offset) * cellWidth) {
             cell++;
         }
@@ -24,6 +27,12 @@ export function functionalTaskContainer(properties) {
     }
 
     function handleDragMove(e, properties) {
+        let maxX = properties.stageWidth - e.target.attrs.width;
+        if (e.target._lastPos.x > maxX){
+            e.target.setAttrs({
+                x:maxX
+            })
+        }
         e.target.children.forEach((child) => {
             if (child.className === "Rect") {
                 switch (child.getAttr("name").split(' ')[0]) {
@@ -59,16 +68,18 @@ export function functionalTaskContainer(properties) {
     function handleDragEnd(e, properties) {
         let week = findWhereToLand(e.target.attrs.x, properties.firstCellWidth, properties.cellWidth,properties.offset);
         properties.changeWeekHandler(week);
-        e.target.to({
+        if (properties.col == -1?week == -1:week !== -1){
+            e.target.to({
             duration: 0.05,
             easing: Konva.Easings.EaseIn,
             scaleX: 1,
-            scaleY: 1,
-            shadowOffsetX: 5,
-            shadowOffsetY: 5,
-            x:week > -1 ? (properties.firstCellWidth + (week - properties.offset) * properties.cellWidth) : 0
-        });
-        if (week == -1) {
+                scaleY: 1,
+                shadowOffsetX: 5,
+                shadowOffsetY: 5,
+                x:week > -1 ? (properties.firstCellWidth + (week - properties.offset) * properties.cellWidth) : 0
+            });
+        }
+        if(properties.col == -1 &&  week == -1) {
             e.target.children.forEach((child) => {
                 let newWidth = properties.firstCellWidth - 10;
                 if (child.className === "Rect") {
@@ -98,13 +109,12 @@ export function functionalTaskContainer(properties) {
             });
         }
     }
-
     return (
         <Group
-            key={"container-" + properties.row}
+            key={"container-" +properties.type+ properties.row}
             x={properties.col > -1 ? (properties.firstCellWidth + (properties.col - properties.offset) * properties.cellWidth) : 0}
             y={(properties.row + 1) * properties.cellHeight}
-            draggable={properties.draggable || false}
+            draggable={properties.draggable || properties.unlock}
             onDragStart={(e) => handleDragStart(e, properties)}
             onDragMove={(e) => handleDragMove(e, properties)}
             onDragEnd={(e) => handleDragEnd(e, properties)}

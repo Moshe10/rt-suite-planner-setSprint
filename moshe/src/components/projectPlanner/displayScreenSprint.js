@@ -7,11 +7,17 @@ import store from '../../store/store';
 import { setWeeksOfProject } from '../../actions/actions';
 import axios from "axios";
 import { updateWeekInTaskContainer } from '../../actions/actions'
+import StartDate from '../StartDate'
 
 
 class DisplayScreenSprint extends Component {
     constructor(props) {
         super(props)
+        this.state = {
+            offset: 0,
+            locked: true,
+            maxCellsPerScreen:10
+        }
 
     }
     // projectId = this.props.projectFromDB._id;
@@ -42,10 +48,11 @@ class DisplayScreenSprint extends Component {
 
     Toggle = () => {
         if (this.props.toggleSetSprint) {
-            let sentData = Object.assign({},{
+            let sentData = Object.assign({}, {
+                weeks: StartDate.createWeeks(this.props.projectLength.length, new Date(this.props.projectFromDB.startDate)),
                 containers: this.props.projectFromDB.taskContainers.map((container) => {
                     return {
-                        contName: container.name, week: container.week, developers:container.developers, tasks: container.tasks.map((task) => {
+                        contName: container.name, week: container.week, developers: container.developers, tasks: container.tasks.map((task) => {
                             return { taskLength: task.length, status: task.status }
                         })
                     }
@@ -58,8 +65,10 @@ class DisplayScreenSprint extends Component {
                     cellWidth={100}
                     firstCellWidth={300}
                     changeWeekHandler={this.hendleChangeWeekHandler.bind(this)}
-                    offset={0}
+                    offset={this.state.offset * this.props.projectFromDB.sprintLength}
                     data={sentData}
+                    unlock={!this.state.locked}
+                    maxCellsPerScreen={this.state.maxCellsPerScreen}
                 />
             )
         }
@@ -79,6 +88,9 @@ class DisplayScreenSprint extends Component {
                     <Link to="/"></Link>
 
                     <Route exact path='/' component={this.Toggle} />
+                    <button onClick={e => { this.setState({ offset: Math.min(this.state.offset + 1, Math.ceil((this.props.projectLength.length - this.state.maxCellsPerScreen) / this.props.projectFromDB.sprintLength)) }) }}>+</button>
+                    <button onClick={e => { this.setState({ offset: Math.max(this.state.offset - 1, 0) }) }}>-</button>
+                    <button onClick={e => {this.setState({locked:!this.state.locked})}}>{this.state.locked?'locked':'unlocked'}</button>
                 </div>
             </BrowserRouter>
         )

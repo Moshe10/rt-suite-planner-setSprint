@@ -7,7 +7,7 @@ class StartDate extends Component {
 
 
    
-    createWeeks(len, mystartDate) {
+    static createWeeks(len, mystartDate) {
         let weeksArr = [];
         let endWeeksArr = []
         let startDate = mystartDate;
@@ -41,13 +41,15 @@ class StartDate extends Component {
           let startWeek = [day +"/"+ month + "/"+year , day1 +"/"+ month1 + "/"+year1] 
           newWeeksArr.push(startWeek)
         }
+        return newWeeksArr;
     }
 
 
     render() {
+        console.log(StartDate.createWeeks(10, this.props.projectFromDB.startDate));
         return (
             <div>
-                {this.createWeeks(10, this.props.projectFromDB.startDate)}
+                {StartDate.createWeeks(10, this.props.projectFromDB.startDate)}
             </div>
         );
     }

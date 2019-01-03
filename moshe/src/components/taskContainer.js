@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import store from '../store/store';
 import $ from 'jquery';
 import axios from 'axios'
-import { plusToTaskOnWork } from '../actions/actions';
+import { plusToTaskOnWork, updateSprintNumInTask } from '../actions/actions';
 
 
 class TaskContainer extends Component {
@@ -24,18 +24,16 @@ class TaskContainer extends Component {
         this.setState({ display: !this.state.display })
     }
 
-    async updateData(fatherIndex, index){
-        const projectId = this.props.projectFromDB._id;
-        var task = this.props.projectFromDB.taskContainers[fatherIndex].tasks[index];
-        task.sprintNum = this.sprintNum;
-        this.props.projectFromDB.taskContainers[fatherIndex].tasks[index] = task;
-        store.dispatch(plusToTaskOnWork(fatherIndex, index))
-        this.setState({});
-        await axios.put('/updateSprintNumInTask', {id:projectId, fatherIndex:fatherIndex, index:index, sprintNum:this.sprintNum});
-    }
+    async hendleTaskClick(fatherIndex,taskIndex){
+        // var task = this.props.projectFromDB.taskContainers[fatherIndex].tasks[index];
+        // task.sprintNum = this.sprintNum;
+        // this.props.projectFromDB.taskContainers[fatherIndex].tasks[index] = task;
 
-    hendleTaskClick(index, fatherIndex){
-        this.updateData(fatherIndex, index)
+        store.dispatch(updateSprintNumInTask(fatherIndex, taskIndex, this.sprintNum));
+        store.dispatch(plusToTaskOnWork(fatherIndex, taskIndex));
+        this.setState({});
+        const projectId = this.props.projectFromDB._id;
+        await axios.put('/updateSprintNumInTask', {id:projectId, fatherIndex:fatherIndex, taskIndex:taskIndex, sprintNum:this.sprintNum});
     }
 
 
@@ -64,7 +62,7 @@ class TaskContainer extends Component {
                                     color="warning"
                                     tag="button" 
                                     action
-                                    onClick={() => this.hendleTaskClick(index, this.props.fatherIndex)}
+                                    onClick={() => this.hendleTaskClick( this.props.fatherIndex, index)}
                                 >
                                     {item.name},  {}
                                     {item.length} Work Days {}

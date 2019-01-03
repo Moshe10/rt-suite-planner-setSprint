@@ -43,10 +43,16 @@ export function minusToTaskOnWork(fatherIndex, index) {
 export function fillTaskOnWorkArr(arr) {
     return { type: "FILL_TASK_ON_WORK_ARR", payload:arr }
 }
-export function selectDevToCont(dev,contIndex) {
-    return { type: "SELECT_DEV_TO_CONT", payload:{developer:dev,index:contIndex} }
+export function selectDevToCont(dev,contIndex,bool) {
+    return { type: "SELECT_DEV_TO_CONT", payload:{developer:dev,index:contIndex,bool:bool} }
 }
 export function lockSprint(contIndex,taskIndex) {
     return { type: "LOCK_SPRINT", payload:{contIndex:contIndex,taskIndex:taskIndex} }
+}
+export function updateSprintNumInTask(contIndex,taskIndex,sprintNum) {
+    return { type: "UPDATE_SPRINT_NUM_IN_TASK", payload:{contIndex:contIndex,taskIndex:taskIndex,sprintNum:sprintNum} }
+}
+export function fillZerosIntaskOnWorkArrInStore(zeroArr) {
+    return { type: "ZEROS_IN_TASK_ON_WORK_ARR",payload:{arr:zeroArr} }
 }
 
