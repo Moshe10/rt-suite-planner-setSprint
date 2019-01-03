@@ -24,15 +24,23 @@ class SelectDev extends Component {
     }
     projectId = this.props.projectFromDB._id;
     
-    componentWillMount() {
-        axios.get('http://5c237c1a5db0f6001345ff30.mockapi.io/developers')
+    async componentWillMount() {
+        let allDevForCont = [];
+        let devArr = [];
+        await axios.get('http://5c237c1a5db0f6001345ff30.mockapi.io/developers')
         .then((response) => {
-            this.setState({developers:response.data})
+            // this.setState({developers:response.data})
+            devArr = response.data;
           })
           .catch(err => {
             console.log("err", err.message);
           })
-        //   this.setState({Pressed:this.fillThePressedinState()})
+          this.props.projectFromDB.taskContainers.map((cont,index) => {
+              allDevForCont[index] = devArr;
+          })
+          console.log(allDevForCont);
+          this.setState({developers:allDevForCont});
+          this.setState({Pressed:this.fillThePressedinState()});
     }
 
     fillThePressedinState(){
@@ -56,10 +64,9 @@ class SelectDev extends Component {
     }
     
     fillDevSelect(contIndex) {
-        var arr = [];
-        this.state.developers.map((dev, index) => {
-            console.log('fillDevSelect()', dev);
-            
+        let arr = [];
+        this.state.developers[contIndex].map((dev, index) => {
+
             arr.push(<label>
                     <input type="checkbox" checked={dev.busy} onChange={(e) => this.checked(e,index,contIndex,dev)} id={"one"+index} />{dev.name}
                     </label>)
