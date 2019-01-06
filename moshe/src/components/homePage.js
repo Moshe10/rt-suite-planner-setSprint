@@ -49,7 +49,6 @@ class HomePage extends Component {
         if (this.state.projectName !== '') {
             console.log('createProject');
             let proName = this.state.projectName;
-            console.log(proName);
             await axios.post('http://10.2.3.131:3000/createProject', { projectName: proName, project: this.props.project })
                 .then((req, res) => {
                 })
@@ -69,7 +68,6 @@ class HomePage extends Component {
             await axios.get('http://10.2.3.131:3000/GetBringAnExistingProject/' + proName)
                     .then((res) => {
                         let pro = res.data[0]
-                        console.log(pro);
                         if (pro.startDate !== null && pro.resolution.length > 2 && pro.sprintLength !== null) {
                             console.log('all detals full, going to plannig');
                             store.dispatch(createProject(pro));

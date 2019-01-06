@@ -15,7 +15,6 @@ class PlanningBoard extends Component {
         super(props);
         let tempGridX = [this.props.firstCellWidth];
         let tempGridY = [this.props.cellHeight];
-        console.log(this.props.maxCellsPerScreen);
         for (let i = 1; (i <= this.props.data.projectLength); i++) {
             tempGridX.push(this.props.firstCellWidth + i * this.props.cellWidth);
         }
@@ -44,9 +43,8 @@ class PlanningBoard extends Component {
     }
 
     devAssinmentHandler(devObj, containerIndex) {
-        console.log(devObj);
         
-        store.dispatch(selectDevToCont(devObj, containerIndex));
+        store.dispatch(selectDevToCont(devObj.name, containerIndex));
     }
 
     render() {
@@ -125,7 +123,7 @@ class PlanningBoard extends Component {
                                             unlock: this.props.unlock
                                         })
                                     } else {
-                                        return (<Group></Group>)
+                                        return (<Group key={index}></Group>)
                                     }
                                 })}
                                 <Rect
@@ -171,7 +169,7 @@ class PlanningBoard extends Component {
                                             unlock: this.props.unlock
                                         })
                                     } else {
-                                        return (<Group></Group>)
+                                        return (<Group key={index}></Group>)
                                     }
                                 })}
 

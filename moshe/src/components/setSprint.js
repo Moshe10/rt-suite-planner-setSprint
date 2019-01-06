@@ -52,7 +52,6 @@ class SetSprint extends Component {
                 }
             })
         })
-        console.log(this.props.projectFromDB.taskContainers);
         await this.updateOfterLockSprint(projecrId, this.props.projectFromDB.taskContainers);
     }
 

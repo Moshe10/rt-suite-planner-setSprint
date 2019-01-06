@@ -116,7 +116,7 @@ class SelectDev extends Component {
                                         key = {"dev"+i+"cont"+this.props.index}
                                         color={isChecked ? "secondary" : "primary"}
                                         style={{ marginLeft: "15px" }}
-                                        onClick={(e) => {this.props.devAssinmentHandler(dev, this.props.index); console.log(this.props.projectFromDB)}}>
+                                        onClick={() => {this.props.devAssinmentHandler(dev, this.props.index)}}>
                                         {dev.name}
                                     </Button>
                                 )

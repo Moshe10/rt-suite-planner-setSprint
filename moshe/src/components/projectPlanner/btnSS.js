@@ -14,8 +14,9 @@ class Btn extends Component{
     btnSetSprintCss = {
         fontSize: '18px',
         height: '65px',
-        width: `100px`,
-        margin: 50 + 'px',
+        width: `90px`,
+        // margin: 10 + 'px',
+        margin: 'auto',
         borderRadius: '10px',
         border: 'none',
         boxShadow: '1px 1px 0px 2px rgba(0,0,0,0.3)',
@@ -26,7 +27,7 @@ class Btn extends Component{
         borderLeft: 'rgb(141,217,252) solid 3px',
         borderRight: 'rgb(141,217,252) solid 3px',
         borderBottom: 'rgb(141,217,252) solid 3px',
-        width: this.props.projectFromDB.sprintLength * 100 ,
+        width: this.props.projectFromDB.sprintLength * 100 + 'px',
         height: '200px',
         margin: '0.5px'
     }

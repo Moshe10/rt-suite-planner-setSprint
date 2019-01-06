@@ -113,7 +113,6 @@ const reducer = function (initState, action) {
         case 'CREATE_PROJECT':
             newState.projectFromDB = action.payload;
             newState.projectFromDB.resolution = [0];
-            console.log(newState.projectFromDB);
             return newState;
         case "SAVE_DATA":
             newState.saveData = true;
@@ -127,7 +126,6 @@ const reducer = function (initState, action) {
                 tempArr.push(parseInt(action.resolution));
                 tempArr.sort(sorter);
                 newState.projectFromDB.resolution = tempArr.slice();
-                console.log(newState.projectFromDB.resolution);
             }
             return newState;
         case "DELETE_LAST":
@@ -149,7 +147,6 @@ const reducer = function (initState, action) {
         case "START_PROJECT":
             if (!jquery.isEmptyObject(newState.projectFromDB)) {
                 newState.projectFromDB.startDate = action.date;
-                console.log(newState.projectFromDB.startDate);
             }
             return newState;
         case "SET_WEEKS_PROJECT":
@@ -225,8 +222,6 @@ const reducer = function (initState, action) {
             myNewTC[action.payload.index] = myNewContainer;
             myNewProjectFromDB.taskContainers = myNewTC;
             newState.projectFromDB = myNewProjectFromDB;
-            console.log(newState.projectFromDB.taskContainers[action.payload.index]);
-            
             return newState;
         case "LOCK_SPRINT":
             let newProjectFromDb3 = { ...newState.projectFromDB };
