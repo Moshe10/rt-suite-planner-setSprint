@@ -3,8 +3,11 @@ import { Stage, Layer, Line, Text, Group, Rect } from 'react-konva';
 import { functionalTaskContainer } from "./taskContainer";
 import Buttons from './buttonSetSprint';
 import { connect } from 'react-redux';
+import jQuery from 'jquery';
 import StartDate from '../StartDate';
 import SelectDev from './SelectDev';
+import store from '../../store/store';
+import { selectDevToCont } from '../../actions/actions';
 
 
 class PlanningBoard extends Component {
@@ -13,7 +16,7 @@ class PlanningBoard extends Component {
         let tempGridX = [this.props.firstCellWidth];
         let tempGridY = [this.props.cellHeight];
         console.log(this.props.maxCellsPerScreen);
-        for (let i = 1; (i <= this.props.data.projectLength) ; i++) {
+        for (let i = 1; (i <= this.props.data.projectLength); i++) {
             tempGridX.push(this.props.firstCellWidth + i * this.props.cellWidth);
         }
         for (let i = 1; i <= this.props.data.containers.length; i++) {
@@ -25,6 +28,7 @@ class PlanningBoard extends Component {
             firstCellWidth: this.props.firstCellWidth,
             gridX: tempGridX,
             gridY: tempGridY,
+            selectDevsOpen: [],
         };
     }
 
@@ -35,7 +39,14 @@ class PlanningBoard extends Component {
         }
         this.setState({
             gridX: tempGridX,
+            selectDevsOpen: [false] * this.state.projectFromDB.taskContainers.length
         });
+    }
+
+    devAssinmentHandler(devObj, containerIndex) {
+        console.log(devObj);
+        
+        store.dispatch(selectDevToCont(devObj, containerIndex));
     }
 
     render() {
@@ -46,13 +57,17 @@ class PlanningBoard extends Component {
 
         return (
             <div className="row">
-                <div className="col-1">
-                    <SelectDev />
+                <div className="col-2" style={{ marginLeft: "20px", paddingTop: window.innerHeight * 0.05 + this.state.cellHeight }}>
+                    {this.props.projectFromDB.taskContainers.map((container, index) => {
+                        return (
+                            <SelectDev key={'selDevelopers' + index} index={index} container={container} cellHeight={this.state.cellHeight} devAssinmentHandler={this.devAssinmentHandler} />
+                        );
+                    })}
                 </div>
-                <div className="col-10">
+                <div className="col-9">
                     <div style={{
-                        paddingRight: window.innerWidth * 0.05,
-                        paddingLeft: window.innerWidth * 0.05,
+                        // paddingRight: window.innerWidth * 0.05,
+                        // paddingLeft: window.innerWidth * 0.05,
                         paddingTop: window.innerHeight * 0.05,
                         paddingBottom: window.innerHeight * 0.05
                     }}>
@@ -81,7 +96,7 @@ class PlanningBoard extends Component {
                                 {this.props.data.containers.map((item, index) => {
                                     if (item.week !== -1) {
                                         return functionalTaskContainer({
-                                            type:"hasWeek",
+                                            type: "hasWeek",
                                             row: index,
                                             col: this.props.data.containers[index].week,
                                             offset: this.props.offset,
@@ -89,7 +104,7 @@ class PlanningBoard extends Component {
                                             containerName: item.contName,
                                             firstCellWidth: this.state.firstCellWidth,
                                             cellWidth: this.state.cellWidth,
-                                            stageWidth:this.state.firstCellWidth + this.state.cellWidth * Math.min(this.props.maxCellsPerScreen, this.props.data.projectLength - this.props.offset),
+                                            stageWidth: this.state.firstCellWidth + this.state.cellWidth * Math.min(this.props.maxCellsPerScreen, this.props.data.projectLength - this.props.offset),
                                             length: item.tasks.reduce(((a, b) => {
                                                 return a + b.taskLength
                                             }), 0),
@@ -107,19 +122,19 @@ class PlanningBoard extends Component {
                                             draggable: item.tasks.reduce(((a, b) => {
                                                 return a && b.status === null
                                             }), true),
-                                            unlock:this.props.unlock
+                                            unlock: this.props.unlock
                                         })
                                     } else {
                                         return (<Group></Group>)
                                     }
                                 })}
-                                <Rect 
+                                <Rect
                                     x={0}
                                     y={0}
-                                    width={this.state.firstCellWidth-1}
+                                    width={this.state.firstCellWidth - 1}
                                     height={this.state.gridX.slice(-1).pop()}
                                     fill="#DDDDDD"
-                                    />
+                                />
                                 {this.state.gridY.map((item, index) => {
                                     return (<Line key={"lineY" + index} stroke="black"
                                         points={[0, item, this.state.gridX.slice(-1).pop(), item]} />)
@@ -127,12 +142,12 @@ class PlanningBoard extends Component {
                                 {this.props.data.containers.map((item, index) => {
                                     if (item.week === -1) {
                                         return functionalTaskContainer({
-                                            type:"noWeek",
+                                            type: "noWeek",
                                             row: index,
                                             col: this.props.data.containers[index].week,
                                             offset: this.props.offset,
                                             cellHeight: this.state.cellHeight,
-                                            stageWidth:this.state.firstCellWidth + this.state.cellWidth * Math.min(this.props.maxCellsPerScreen, this.props.data.projectLength - this.props.offset),
+                                            stageWidth: this.state.firstCellWidth + this.state.cellWidth * Math.min(this.props.maxCellsPerScreen, this.props.data.projectLength - this.props.offset),
                                             containerName: item.contName,
                                             firstCellWidth: this.state.firstCellWidth,
                                             cellWidth: this.state.cellWidth,
@@ -153,7 +168,7 @@ class PlanningBoard extends Component {
                                             draggable: item.tasks.reduce(((a, b) => {
                                                 return a && b.status === null
                                             }), true),
-                                            unlock:this.props.unlock
+                                            unlock: this.props.unlock
                                         })
                                     } else {
                                         return (<Group></Group>)
@@ -162,7 +177,7 @@ class PlanningBoard extends Component {
 
                             </Layer>
                         </Stage>
-                        <Buttons offset={this.props.offset} maxCellsPerScreen={this.props.maxCellsPerScreen}/>
+                        <Buttons offset={this.props.offset} maxCellsPerScreen={this.props.maxCellsPerScreen} />
                     </div>
                 </div>
             </div>

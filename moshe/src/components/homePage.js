@@ -36,7 +36,7 @@ class HomePage extends Component {
     }
 
     async componentWillMount() {
-        await axios.get('http://10.2.2.121:5555/templates')
+        await axios.get('http://10.2.3.130:5555/templates')
         .then((response) => {
             this.setState({templates:response.data})
           })
@@ -50,7 +50,7 @@ class HomePage extends Component {
             console.log('createProject');
             let proName = this.state.projectName;
             console.log(proName);
-            await axios.post('http://10.2.2.109:3000/createProject', { projectName: proName, project: this.props.project })
+            await axios.post('http://10.2.3.131:3000/createProject', { projectName: proName, project: this.props.project })
                 .then((req, res) => {
                 })
                 await axios.get('/getAllProject/'+ proName).
@@ -66,7 +66,7 @@ class HomePage extends Component {
     async hendleGetProjectOnClick(){
         if (this.state.nameToGetProject !== '') {
             let proName = this.state.nameToGetProject;
-            await axios.get('http://10.2.2.109:3000/GetBringAnExistingProject/' + proName)
+            await axios.get('http://10.2.3.131:3000/GetBringAnExistingProject/' + proName)
                     .then((res) => {
                         let pro = res.data[0]
                         console.log(pro);
@@ -164,7 +164,7 @@ class HomePage extends Component {
                     resolution: this.props.projectFromDB.resolution,
                     template: this.state.templateForProject,
                 }
-                await axios.post('http://10.2.2.121:5555/new_project', dataForTrello)
+                await axios.post('http://10.2.3.130:5555/new_project', dataForTrello)
                 .then((req, res) => {
                     console.log(req);
                 })
